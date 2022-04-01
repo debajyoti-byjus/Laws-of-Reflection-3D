@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>three.js demo app</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: rgb(61, 61, 61);
+        }
+
+        canvas {
+            /* display: none; */
+            width: 100%;
+            height: 100%
+        }
+
+        /* #slidecontainer {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+        } */
+    </style>
+</head>
+
+<body>
+    <canvas class="webgl"></canvas>
+    <!-- <script src="./js/three.module.js"></script> -->
+    <script type="module" src="./script.js"></script>
+
+    <!-- <script type="module" src="./js/GLTFLoader.js"></script> -->
+
+    <!-- <div class="slidecontainer">
+        <input type="range" min="0" max="3.1415" value="0" step="0.001" class="slider" id="myRange">
+    </div>
+
+    <div class="slidecontainer">
+        <input type="range" min="-3" max="3" value="0" step="0.01" class="slider" id="myRange2">
+    </div>
+
+    <div class="slidecontainer">
+        <input type="range" min="-3" max="3" value="0" step="0.01" class="slider" id="myRangey">
+    </div>
+
+    <div class="slidecontainer">
+        <input type="range" min="-3" max="3" value="0" step="0.01" class="slider" id="myRangez">
+    </div>
+
+    <script src="./js/three.js"></script>
+    <script>
+
+        // import { GLTFLoader } from "./js/GLTFLoader.js"
+        // const loader = new GLTFLoader();
+        // loader.load('./assets/food_apple_01_1k.gltf', function (gltf) {
+        //     console.log(gltf);
+        // })
+
+        const scene = new THREE.Scene();
+        // scene.castshadow = true;
+        // console.table(scene);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // console.log(camera);
+        const renderer = new THREE.WebGLRenderer();
+        // console.log(renderer);
+        renderer.setSize(window.innerWidth, window.innerHeight, false); // app at 50% resolution but fulscreen
+        document.body.appendChild(renderer.domElement);
+
+        const geometry = new THREE.BoxGeometry();
+        console.log(geometry);
+        const material = new THREE.MeshPhongMaterial({ color: 0x796c94 });
+        // const material = new THREE.MeshBasicMaterial({ color: 0x594b4a });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        const wireframe = new THREE.WireframeGeometry(geometry);
+
+        // const line = new THREE.LineSegments(wireframe);
+        // line.material.depthTest = false;
+        // line.material.opacity = 0.25;
+        // line.material.transparent = true;
+
+        // scene.add(line);
+
+        camera.position.z = 3.5;
+
+        //LIGHTING
+        const color = 0xffa8fc;
+        const intensity = 1;
+        const light = new THREE.DirectionalLight(color, intensity);
+        light.position.set(8, 0, 0);
+        scene.add(light);
+
+        const color22 = 0xffffff;
+        const intensity2 = 1;
+        const light2 = new THREE.DirectionalLight(color22, intensity2);
+        light2.position.set(-8, 0, 3);
+        scene.add(light2);
+
+
+        const light3 = new THREE.DirectionalLight(color22, intensity2);
+        light3.position.set(1, 5, 2);
+        scene.add(light3);
+
+
+        let timeVar = 1;
+        function animate() {
+            requestAnimationFrame(animate);
+            // cube.rotation.x += 0.01;
+            // cube.rotation.y += 0.01;
+            cube.rotation.z += 0.01;
+            renderer.render(scene, camera);
+            timeVar++;
+            cube.rotation.x = document.getElementById("myRange").value;
+            // line.rotation.x = document.getElementById("myRange").value;
+
+            cube.position.x = document.getElementById("myRange2").value;
+            // line.position.x = document.getElementById("myRange2").value;
+
+            cube.position.y = document.getElementById("myRangey").value;
+            // line.position.y = document.getElementById("myRangey").value;
+
+            cube.position.z = document.getElementById("myRangez").value;
+            // line.position.z = document.getElementById("myRangez").value;
+        };
+        animate();
+    </script> -->
+</body>
+
+</html>
