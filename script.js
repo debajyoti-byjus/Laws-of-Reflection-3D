@@ -17,7 +17,7 @@ const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
 // this._composer = new EffectComposer()
 
-let root1, root2, root3, laserModel, greenCuttingBoard, arrowModel, scaleval = 0.8;
+let root1, root2, root3, laserModel, greenCuttingBoard, arrowModel2, arrowModel, scaleval = 0.8;
 let roughness0 = 0, transmission1 = 0.9, thick1 = 0;
 let tag;
 let root1Material;
@@ -47,6 +47,34 @@ cylinderIncidentBeam.scale.set(1, 1, 1);
 cylinderIncidentBeam.rotation.set(0, 0, Math.PI / 2);
 scene.add(cylinderIncidentBeam);
 
+//-----------Incident Laser Beam Arrow-----------------
+loader.load("./assets/3D models glb/arrow.glb", function (glb) {
+    arrowModel = glb.scene;
+    arrowModel.position.set(1, 0, 0);
+    arrowModel.scale.set(.5, .5, .5);
+    arrowModel.rotation.set(0, 0, Math.PI / 2);
+    arrowModel.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
+    scene.add(arrowModel);
+}, function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + "%loaded");
+}, function (error) {
+    console.log(`An error occured`);
+});
+
+//-----------Reflected Laser Beam Arrow-----------------
+loader.load("./assets/3D models glb/arrow.glb", function (glb) {
+    arrowModel2 = glb.scene;
+    arrowModel2.position.set(1, 0, 0);
+    arrowModel2.scale.set(.5, .5, .5);
+    arrowModel2.rotation.set(0, Math.PI, Math.PI / 2);
+    arrowModel2.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
+    scene.add(arrowModel2);
+}, function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + "%loaded");
+}, function (error) {
+    console.log(`An error occured`);
+});
+
 //-----------Refracted Laser Beam-----------------
 const geometryRefractedBeam = new THREE.CylinderGeometry(0.06, 0.06, 2, 32);
 const materialRefractedBeam = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
@@ -61,7 +89,7 @@ scene.add(cylinderRefractedBeam);
 loader.load("./assets/3D models glb/Green Cutting Board2.glb", function (glb) {
     greenCuttingBoard = glb.scene;
     greenCuttingBoard.position.set(1, -2, 0);
-    greenCuttingBoard.scale.set(5, 5, 5);
+    greenCuttingBoard.scale.set(6.5, 6.5, 6.5);
     greenCuttingBoard.rotation.set(0, 0, 0);
     // greenCuttingBoard.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
     scene.add(greenCuttingBoard);
@@ -116,8 +144,14 @@ function laserPointer() {
     let zLaserStart = n * z / (m + n);
     cylinderIncidentBeam.position.set(xLaserStart, 0, zLaserStart);
     cylinderIncidentBeam.rotation.set(0, -theta, Math.PI / 2);
+
+    arrowModel.position.set(xLaserStart, 0, zLaserStart);
+    arrowModel.rotation.set(0, -theta, Math.PI / 2);
     cylinderRefractedBeam.position.set(xLaserStart, 0, -zLaserStart);
     cylinderRefractedBeam.rotation.set(0, theta, Math.PI / 2);
+
+    arrowModel2.position.set(xLaserStart, 0, -zLaserStart);
+    arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
     //Also put the laser in this part
 
     //Laser texture
