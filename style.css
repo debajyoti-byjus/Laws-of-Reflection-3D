@@ -10,14 +10,15 @@ html{
     border-radius: 1rem;
     color: rgb(54, 54, 54);
     font-size: 5rem;
-    
     transform: translate(-50%,-50%);
 }
 #startAnimBtn:hover{
+
     cursor: pointer;
 }
-#sliderContainer{
+#slidecontainer{
     position: absolute;
     top: 5%;
     left: 5%;
+    z-index: 265;
 }
