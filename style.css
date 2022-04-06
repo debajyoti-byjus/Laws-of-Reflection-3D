@@ -1,24 +1,87 @@
-html{
-    background: rgb(175, 207, 128)
+*{
+    margin: 0;
+    padding: 0;
 }
-#startAnimBtn{
+.slidecontainer {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: rgb(171, 161, 230);
-    padding: 2rem;
-    border-radius: 1rem;
-    color: rgb(54, 54, 54);
-    font-size: 5rem;
-    transform: translate(-50%,-50%);
-}
-#startAnimBtn:hover{
-
-    cursor: pointer;
-}
-#slidecontainer{
-    position: absolute;
+    width:25%;
     top: 5%;
-    left: 5%;
-    z-index: 265;
+    right: 5%;
+}
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 0.8rem;
+    background: linear-gradient(to left,rgb(33, 82, 243),skyblue);
+    border: #505050 solid 0.1rem;
+    border-radius: 0.15rem;
+    opacity: 1;
+}
+.slider:hover {
+    opacity: 1;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: #657461 solid 0.1rem;
+    border-radius: 0.2rem;
+    background: #cfebc7;
+    cursor: pointer;
+    opacity: 1;
+    -webkit-filter: drop-shadow(1px 1px .1rem #505050)
+    drop-shadow(1px 1px .1rem #505050);
+    filter: drop-shadow(1px 1px .1rem #505050) 
+}
+.slider::-moz-range-thumb {
+    width: 0.8rem;
+    height: 2rem;
+    outline: #657461 solid 0.05rem;
+    border-radius:  0.2rem;
+    background: #cfebc7;
+    cursor: pointer;
+    opacity: 1;
+    -moz-filter: drop-shadow(1px 1px 1rem #505050)
+    drop-shadow(1px 1px 1rem #505050);
+    filter: drop-shadow(1px 1px 1rem #505050) 
+}
+
+/* #canv{
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 200;
+} */
+
+/* #labels{
+    position: absolute;  
+    left: 0;  
+    top: 0;
+    color: white;
+    background-color: grey;
+  } */
+
+
+#normalToggle{
+    position: absolute;
+    width: 12%;
+    height: 12%;
+    top:80%;
+    right: 1%;
+    accent-color: #154c73;
+    background: linear-gradient(0.5turn, #42abd4, #154c73);
+    padding: 0.3rem;
+    border-radius: 0.3rem;
+}
+#planeToggle{
+    position: absolute;
+    width: 12%;
+    height: 12%;
+    top:60%;
+    right: 1%;
+    accent-color: #154c73;
+    background: linear-gradient(0.5turn, #42abd4, #154c73);
+    padding: 0.3rem;
+    border-radius: 0.3rem;
 }

@@ -93,7 +93,7 @@ scene.add(cylinderRefractedBeam);
 
 
 //-------------Green Cutting Board----------------
-loader.load("./assets/3D models glb/Green Cutting Board2.glb", function (glb) {
+loader.load("./assets/3D models glb/greenBoardFinal.glb", function (glb) {
     greenCuttingBoard = glb.scene;
     greenCuttingBoard.position.set(4 + sceneShiftX, -2, 0);
     greenCuttingBoard.scale.set(6.5, 6.5, 6.5);
@@ -109,22 +109,30 @@ loader.load("./assets/3D models glb/Green Cutting Board2.glb", function (glb) {
 
 //-------------Mirror----------------
 const geometry = new THREE.PlaneGeometry(1, 1);
-// const material = new THREE.MeshPhongMaterial({ color: 0xffff00, side: THREE.DoubleSide });
-// const material = new THREE.MeshPhongMaterial({ color: 0xffff00, side: THREE.DoubleSide });
 
-// reflectionLoader();
-let plane = new Reflector(geometry, {
-    clipBias: 0,
-    textureWidth: window.innerWidth * window.devicePixelRatio,
-    textureHeight: window.innerHeight * window.devicePixelRatio,
-    color: 0x777777
-});
+// let plane = new Reflector(geometry, {
+//     clipBias: 0,
+//     textureWidth: window.innerWidth * window.devicePixelRatio,
+//     textureHeight: window.innerHeight * window.devicePixelRatio,
+//     color: 0x777777
+// });
 
-// const plane = new THREE.Mesh(geometry, material);
-plane.scale.set(3, 8, 1);
+const material = new THREE.MeshPhongMaterial({ color: "#111111", side: THREE.DoubleSide });
+const plane = new THREE.Mesh(geometry, material);
+plane.scale.set(3, 5, 1);
 plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
 plane.position.set(0 + sceneShiftX, 0, 0);
 scene.add(plane);
+
+//----------------------------Mirror Cube------------------------
+let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 5.1);
+let material1 = new THREE.MeshLambertMaterial({ color: "grey" });
+
+let mirrorBack = new THREE.Mesh(geometry1, material1);
+mirrorBack.position.set(-0.03 + sceneShiftX, 0, 0)
+scene.add(mirrorBack);
+//----------------------------Mirror Cube Ends------------------------
+
 
 //----------Creating the transparent plane of reflection-------------
 const geometryPlane = new THREE.PlaneGeometry(1, 1);
@@ -190,14 +198,7 @@ function laserPointer() {
     arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
 }
 
-//----------------------------Mirror Cube------------------------
-let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 8.1);
-let material1 = new THREE.MeshLambertMaterial({ color: "grey" });
 
-let mirrorBack = new THREE.Mesh(geometry1, material1);
-mirrorBack.position.set(-0.03 + sceneShiftX, 0, 0)
-scene.add(mirrorBack);
-//----------------------------Mirror Cube Ends------------------------
 
 
 //---------------Boilerplate code----------------
@@ -218,24 +219,25 @@ const renderer = new THREE.WebGL1Renderer({
 
 //LIGHTING
 let color = 0xffffff;
-let intensity = 1.2;
+let intensity = 1;
 const light = new THREE.DirectionalLight(color, intensity);
-light.position.set(0 + sceneShiftX, 2, 2);
+light.position.set(10 + sceneShiftX, 6, 0);
 scene.add(light);
+
 intensity = 1.3;
 const light2 = new THREE.DirectionalLight(color, intensity);
 light2.position.set(2 + sceneShiftX, -2, 2);
-scene.add(light2);
-const light4 = new THREE.AmbientLight(0xffffffff, 2); // soft white light
-// scene.add(light4);
+// scene.add(light2);
+const light4 = new THREE.AmbientLight(0xffffffff, 1.2); // soft white light
+scene.add(light4);
 const light7 = new THREE.AmbientLight(0xffffffff); // soft white light
 // scene.add(light7);
 const light3 = new THREE.DirectionalLight(color, intensity);
 light3.position.set(0 + sceneShiftX, 0, -3);
-scene.add(light3);
+// scene.add(light3);
 const light8 = new THREE.DirectionalLight(color, intensity);
 light8.position.set(-2 + sceneShiftX, 0, 0);
-scene.add(light8);
+// scene.add(light8);
 renderer.setSize(sizes.width, sizes.height);
 // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -245,7 +247,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.4;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(canvas);
-renderer.setClearColor("#444"); // whi/te background - replace ffffff with any hex color
+renderer.setClearColor("#aaaaaa"); // whi/te background - replace ffffff with any hex color
 
 
 //Orbit controlls
@@ -284,3 +286,21 @@ document.getElementById("myRange").oninput = function () {
 // }
 
 
+document.getElementById("planeToggle").oninput = function () {
+    if (document.getElementById("planeToggle").checked) {
+        //set opacity/unhidden
+        reflectionPlane.material.opacity = 0.2;
+    }
+    else {
+        reflectionPlane.material.opacity = 0;
+    }
+}
+document.getElementById("normalToggle").oninput = function () {
+    if (document.getElementById("normalToggle").checked) {
+        //set opacity/unhidden
+        normal.material.opacity = 0.8;
+    }
+    else {
+        normal.material.opacity = 0;
+    }
+}
