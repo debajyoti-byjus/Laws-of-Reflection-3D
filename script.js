@@ -4,8 +4,8 @@ import { GLTFLoader } from './js/GLTFLoader.js';
 import { OrbitControls } from './js/OrbitControls.js';
 import { Reflector } from './js/Reflector.js';
 
-// import { EffectComposer } from './js/EffectComposer.js';
-// import { RenderPass } from './js/RenderPass.js';
+import { EffectComposer } from './js/EffectComposer.js';
+import { RenderPass } from './js/RenderPass.js';
 
 // import { InfiniteGridHelper } from "./js/InfiniteGridHelper.js";
 // import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module.js';
@@ -15,7 +15,13 @@ import { Reflector } from './js/Reflector.js';
 
 const canvas = document.querySelector('.webgl');
 const scene = new THREE.Scene();
-// this._composer = new EffectComposer()
+// this._composer = new EffectComposer(._threejs);
+
+let raylength = 4, m = 1, n = 1, radiusRatio = 0.6;
+// let arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
+let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5;
+
+let sceneShiftX = -3;
 
 let root1, root2, root3, laserModel, greenCuttingBoard, arrowModel2, arrowModel, scaleval = 0.8;
 let roughness0 = 0, transmission1 = 0.9, thick1 = 0;
@@ -24,11 +30,11 @@ let root1Material;
 // loading
 const loader = new GLTFLoader();
 
-//-------------LASER Box ----------------
+//-------------LASER Pointer ----------------
 loader.load("./assets/3D models glb/scene.glb", function (glb) {
     laserModel = glb.scene;
-    laserModel.position.set(4, 0, 0);
-    laserModel.scale.set(0.005, 0.005, 0.005);
+    laserModel.position.set(laserPointerRadius + sceneShiftX, 0, 0);
+    laserModel.scale.set(0.003, 0.003, 0.003);
     laserModel.rotation.set(0, 0, 0);
     // laserModel.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
     scene.add(laserModel);
@@ -39,10 +45,10 @@ loader.load("./assets/3D models glb/scene.glb", function (glb) {
 });
 
 //-----------Incident Laser Beam-----------------
-const geometryIncidentBeam = new THREE.CylinderGeometry(0.06, 0.06, 2, 32);
+const geometryIncidentBeam = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 2, 32);
 const materialIncidentBeam = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
 const cylinderIncidentBeam = new THREE.Mesh(geometryIncidentBeam, materialIncidentBeam);
-cylinderIncidentBeam.position.set(1, 0, 0);
+cylinderIncidentBeam.position.set(beamCentreRadius + sceneShiftX, 0, 0);
 cylinderIncidentBeam.scale.set(1, 1, 1);
 cylinderIncidentBeam.rotation.set(0, 0, Math.PI / 2);
 scene.add(cylinderIncidentBeam);
@@ -50,10 +56,10 @@ scene.add(cylinderIncidentBeam);
 //-----------Incident Laser Beam Arrow-----------------
 loader.load("./assets/3D models glb/arrow.glb", function (glb) {
     arrowModel = glb.scene;
-    arrowModel.position.set(1, 0, 0);
+    arrowModel.position.set(arrow1Radius + sceneShiftX, 0, 0);
     arrowModel.scale.set(.5, .5, .5);
     arrowModel.rotation.set(0, 0, Math.PI / 2);
-    arrowModel.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
+    arrowModel.children[0].material = new THREE.MeshBasicMaterial({ color: 'red' });
     scene.add(arrowModel);
 }, function (xhr) {
     console.log((xhr.loaded / xhr.total * 100) + "%loaded");
@@ -64,10 +70,10 @@ loader.load("./assets/3D models glb/arrow.glb", function (glb) {
 //-----------Reflected Laser Beam Arrow-----------------
 loader.load("./assets/3D models glb/arrow.glb", function (glb) {
     arrowModel2 = glb.scene;
-    arrowModel2.position.set(1, 0, 0);
+    arrowModel2.position.set(arrow2Radius + sceneShiftX, 0, 0);
     arrowModel2.scale.set(.5, .5, .5);
     arrowModel2.rotation.set(0, Math.PI, Math.PI / 2);
-    arrowModel2.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
+    arrowModel2.children[0].material = new THREE.MeshBasicMaterial({ color: 'red' });
     scene.add(arrowModel2);
 }, function (xhr) {
     console.log((xhr.loaded / xhr.total * 100) + "%loaded");
@@ -76,10 +82,10 @@ loader.load("./assets/3D models glb/arrow.glb", function (glb) {
 });
 
 //-----------Refracted Laser Beam-----------------
-const geometryRefractedBeam = new THREE.CylinderGeometry(0.06, 0.06, 2, 32);
+const geometryRefractedBeam = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 2, 32);
 const materialRefractedBeam = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
 const cylinderRefractedBeam = new THREE.Mesh(geometryRefractedBeam, materialRefractedBeam);
-cylinderRefractedBeam.position.set(1, 0, 0);
+cylinderRefractedBeam.position.set(beamCentreRadius + sceneShiftX, 0, 0);
 cylinderRefractedBeam.scale.set(1, 1, 1);
 cylinderRefractedBeam.rotation.set(0, 0, Math.PI / 2);
 scene.add(cylinderRefractedBeam);
@@ -88,7 +94,7 @@ scene.add(cylinderRefractedBeam);
 //-------------Green Cutting Board----------------
 loader.load("./assets/3D models glb/Green Cutting Board2.glb", function (glb) {
     greenCuttingBoard = glb.scene;
-    greenCuttingBoard.position.set(1, -2, 0);
+    greenCuttingBoard.position.set(4 + sceneShiftX, -2, 0);
     greenCuttingBoard.scale.set(6.5, 6.5, 6.5);
     greenCuttingBoard.rotation.set(0, 0, 0);
     // greenCuttingBoard.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
@@ -116,13 +122,14 @@ let plane = new Reflector(geometry, {
 // const plane = new THREE.Mesh(geometry, material);
 plane.scale.set(3, 8, 1);
 plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
-plane.position.set(0, 0, 0);
+plane.position.set(0 + sceneShiftX, 0, 0);
 scene.add(plane);
 
 //Test object
 const geometry2 = new THREE.SphereGeometry(.06, 20, 20);
 const material2 = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
 let testObject = new THREE.Mesh(geometry2, material2);
+testObject.position.set(0 + sceneShiftX, 0, 0);
 scene.add(testObject);
 
 //Create a Laser here
@@ -130,27 +137,36 @@ scene.add(testObject);
 
 //-------LASER position wrt slider --------------
 function laserPointer() {
+    // arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
+
     //takes the slider value and rotates/repositions the pointer
     let sliderval = document.getElementById("myRange").value;
-    let x, z, theta, radius = 4;
+    let x, z, theta;
     theta = sliderval;
-    x = radius * Math.cos(theta);
-    z = radius * Math.sin(theta);
+    x = laserPointerRadius * Math.cos(theta);
+    z = laserPointerRadius * Math.sin(theta);
 
-    laserModel.position.set(x, 0, z);
+    laserModel.position.set(x + sceneShiftX, 0, z);
     laserModel.rotation.set(0, -theta, 0);
-    let m = 3, n = 1;
-    let xLaserStart = n * x / (m + n);
-    let zLaserStart = n * z / (m + n);
-    cylinderIncidentBeam.position.set(xLaserStart, 0, zLaserStart);
+    let xLaserStart = beamCentreRadius * Math.cos(theta);
+    let zLaserStart = beamCentreRadius * Math.sin(theta);
+
+    let xArrow = arrow1Radius * Math.cos(theta);
+    let zArrow = arrow1Radius * Math.sin(theta);
+
+    cylinderIncidentBeam.position.set(xLaserStart + sceneShiftX, 0, zLaserStart);
     cylinderIncidentBeam.rotation.set(0, -theta, Math.PI / 2);
 
-    arrowModel.position.set(xLaserStart, 0, zLaserStart);
+    arrowModel.position.set(xArrow + sceneShiftX, 0, zArrow);
     arrowModel.rotation.set(0, -theta, Math.PI / 2);
-    cylinderRefractedBeam.position.set(xLaserStart, 0, -zLaserStart);
+
+    cylinderRefractedBeam.position.set(xLaserStart + sceneShiftX, 0, -zLaserStart);
     cylinderRefractedBeam.rotation.set(0, theta, Math.PI / 2);
 
-    arrowModel2.position.set(xLaserStart, 0, -zLaserStart);
+    xArrow = arrow2Radius * Math.cos(theta);
+    zArrow = arrow2Radius * Math.sin(theta);
+
+    arrowModel2.position.set(xArrow + sceneShiftX, 0, -zArrow);
     arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
     //Also put the laser in this part
 
@@ -341,7 +357,7 @@ let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 8.1);
 let material1 = new THREE.MeshLambertMaterial({ color: "grey" });
 
 let mirrorBack = new THREE.Mesh(geometry1, material1);
-mirrorBack.position.set(-0.03, 0, 0)
+mirrorBack.position.set(-0.03 + sceneShiftX, 0, 0)
 scene.add(mirrorBack);
 //----------------------------Mirror Cube Ends------------------------
 
@@ -366,21 +382,21 @@ const renderer = new THREE.WebGL1Renderer({
 let color = 0xffffff;
 let intensity = 1.2;
 const light = new THREE.DirectionalLight(color, intensity);
-light.position.set(0, 2, 2);
+light.position.set(0 + sceneShiftX, 2, 2);
 scene.add(light);
 intensity = 1.3;
 const light2 = new THREE.DirectionalLight(color, intensity);
-light2.position.set(2, -2, 2);
+light2.position.set(2 + sceneShiftX, -2, 2);
 scene.add(light2);
-// const light4 = new THREE.AmbientLight(0xffffffff); // soft white light
+const light4 = new THREE.AmbientLight(0xffffffff, 2); // soft white light
 // scene.add(light4);
-// const light7 = new THREE.AmbientLight(0xffffffff); // soft white light
+const light7 = new THREE.AmbientLight(0xffffffff); // soft white light
 // scene.add(light7);
 const light3 = new THREE.DirectionalLight(color, intensity);
-light3.position.set(0, 0, -3);
+light3.position.set(0 + sceneShiftX, 0, -3);
 scene.add(light3);
 const light8 = new THREE.DirectionalLight(color, intensity);
-light8.position.set(-2, 0, 0);
+light8.position.set(-2 + sceneShiftX, 0, 0);
 scene.add(light8);
 renderer.setSize(sizes.width, sizes.height);
 // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -398,7 +414,6 @@ renderer.setClearColor("#444"); // whi/te background - replace ffffff with any h
 const controls = new OrbitControls(camera, canvas);
 renderer.render(scene, camera);
 
-
 let timeVar = 1;
 function animate() {
     /*****WARNING********/
@@ -410,6 +425,9 @@ function animate() {
     // console.log(laserModel.rotation.x);
     renderer.render(scene, camera);
     timeVar++;
+    if (timeVar == 30) { //ERROR MAY OCCUR HERE TOO
+        laserPointer();
+    }
     // cube.rotation.x = documentgetElementByI("myRange").value;
     // line.rotation.x = documentgetElementByI("myRange").value;
     // cube.positio n.x = documentgetElementByI("myRange2").value;
@@ -425,206 +443,6 @@ document.getElementById("myRange").oninput = function () {
 }
 
 // window.onload = function () {
-//     import { Reflector } from './js/Reflector.js';
-// }
-
-// function reflectionLoader() {
-//     class Reflector extends THREE.Mesh {
-//         constructor(geometry, options = {}) {
-
-//             super(geometry);
-//             this.type = 'Reflector';
-//             const scope = this;
-//             const color = options.color !== undefined ? new THREE.Color(options.color) : new THREE.Color(0x7F7F7F);
-//             const textureWidth = options.textureWidth || 512;
-//             const textureHeight = options.textureHeight || 512;
-//             const clipBias = options.clipBias || 0;
-//             const shader = options.shader || Reflector.ReflectorShader;
-//             const multisample = options.multisample !== undefined ? options.multisample : 4; //
-
-//             const reflectorPlane = new THREE.Plane();
-//             const normal = new THREE.Vector3();
-//             const reflectorWorldPosition = new THREE.Vector3();
-//             const cameraWorldPosition = new THREE.Vector3();
-//             const rotationMatrix = new THREE.Matrix4();
-//             const lookAtPosition = new THREE.Vector3(0, 0, - 1);
-//             const clipPlane = new THREE.Vector4();
-//             const view = new THREE.Vector3();
-//             const target = new THREE.Vector3();
-//             const q = new THREE.Vector4();
-//             const textureMatrix = new THREE.Matrix4();
-//             const virtualCamera = new THREE.PerspectiveCamera();
-//             const renderTarget = new THREE.WebGLRenderTarget(textureWidth, textureHeight, {
-//                 samples: multisample
-//             });
-//             const material = new THREE.ShaderMaterial({
-//                 uniforms: THREE.UniformsUtils.clone(shader.uniforms),
-//                 fragmentShader: shader.fragmentShader,
-//                 vertexShader: shader.vertexShader
-//             });
-//             material.uniforms['tDiffuse'].value = renderTarget.texture;
-//             material.uniforms['color'].value = color;
-//             material.uniforms['textureMatrix'].value = textureMatrix;
-//             this.material = material;
-
-//             this.onBeforeRender = function (renderer, scene, camera) {
-
-//                 reflectorWorldPosition.setFromMatrixPosition(scope.matrixWorld);
-//                 cameraWorldPosition.setFromMatrixPosition(camera.matrixWorld);
-//                 rotationMatrix.extractRotation(scope.matrixWorld);
-//                 normal.set(0, 0, 1);
-//                 normal.applyMatrix4(rotationMatrix);
-//                 view.subVectors(reflectorWorldPosition, cameraWorldPosition); // Avoid rendering when reflector is facing away
-
-//                 if (view.dot(normal) > 0) return;
-//                 view.reflect(normal).negate();
-//                 view.add(reflectorWorldPosition);
-//                 rotationMatrix.extractRotation(camera.matrixWorld);
-//                 lookAtPosition.set(0, 0, - 1);
-//                 lookAtPosition.applyMatrix4(rotationMatrix);
-//                 lookAtPosition.add(cameraWorldPosition);
-//                 target.subVectors(reflectorWorldPosition, lookAtPosition);
-//                 target.reflect(normal).negate();
-//                 target.add(reflectorWorldPosition);
-//                 virtualCamera.position.copy(view);
-//                 virtualCamera.up.set(0, 1, 0);
-//                 virtualCamera.up.applyMatrix4(rotationMatrix);
-//                 virtualCamera.up.reflect(normal);
-//                 virtualCamera.lookAt(target);
-//                 virtualCamera.far = camera.far; // Used in WebGLBackground
-
-//                 virtualCamera.updateMatrixWorld();
-//                 virtualCamera.projectionMatrix.copy(camera.projectionMatrix); // Update the texture matrix
-
-//                 textureMatrix.set(0.5, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0);
-//                 textureMatrix.multiply(virtualCamera.projectionMatrix);
-//                 textureMatrix.multiply(virtualCamera.matrixWorldInverse);
-//                 textureMatrix.multiply(scope.matrixWorld); // Now update projection matrix with new clip plane, implementing code from: http://www.terathon.com/code/oblique.html
-//                 // Paper explaining this technique: http://www.terathon.com/lengyel/Lengyel-Oblique.pdf
-
-//                 reflectorPlane.setFromNormalAndCoplanarPoint(normal, reflectorWorldPosition);
-//                 reflectorPlane.applyMatrix4(virtualCamera.matrixWorldInverse);
-//                 clipPlane.set(reflectorPlane.normal.x, reflectorPlane.normal.y, reflectorPlane.normal.z, reflectorPlane.constant);
-//                 const projectionMatrix = virtualCamera.projectionMatrix;
-//                 q.x = (Math.sign(clipPlane.x) + projectionMatrix.elements[8]) / projectionMatrix.elements[0];
-//                 q.y = (Math.sign(clipPlane.y) + projectionMatrix.elements[9]) / projectionMatrix.elements[5];
-//                 q.z = - 1.0;
-//                 q.w = (1.0 + projectionMatrix.elements[10]) / projectionMatrix.elements[14]; // Calculate the scaled plane vector
-
-//                 clipPlane.multiplyScalar(2.0 / clipPlane.dot(q)); // Replacing the third row of the projection matrix
-
-//                 projectionMatrix.elements[2] = clipPlane.x;
-//                 projectionMatrix.elements[6] = clipPlane.y;
-//                 projectionMatrix.elements[10] = clipPlane.z + 1.0 - clipBias;
-//                 projectionMatrix.elements[14] = clipPlane.w; // Render
-
-//                 renderTarget.texture.encoding = renderer.outputEncoding;
-//                 scope.visible = false;
-//                 const currentRenderTarget = renderer.getRenderTarget();
-//                 const currentXrEnabled = renderer.xr.enabled;
-//                 const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
-//                 renderer.xr.enabled = false; // Avoid camera modification
-
-//                 renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
-
-//                 renderer.setRenderTarget(renderTarget);
-//                 renderer.state.buffers.depth.setMask(true); // make sure the depth buffer is writable so it can be properly cleared, see #18897
-
-//                 if (renderer.autoClear === false) renderer.clear();
-//                 renderer.render(scene, virtualCamera);
-//                 renderer.xr.enabled = currentXrEnabled;
-//                 renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
-//                 renderer.setRenderTarget(currentRenderTarget); // Restore viewport
-
-//                 const viewport = camera.viewport;
-
-//                 if (viewport !== undefined) {
-
-//                     renderer.state.viewport(viewport);
-
-//                 }
-
-//                 scope.visible = true;
-
-//             };
-
-//             this.getRenderTarget = function () {
-
-//                 return renderTarget;
-
-//             };
-
-//             this.dispose = function () {
-
-//                 renderTarget.dispose();
-//                 scope.material.dispose();
-
-//             };
-
-//         }
-//     }
-//     Reflector.prototype.isReflector = true;
-//     Reflector.ReflectorShader = {
-//         uniforms: {
-//             'color': {
-//                 value: null
-//             },
-//             'tDiffuse': {
-//                 value: null
-//             },
-//             'textureMatrix': {
-//                 value: null
-//             }
-//         },
-//         vertexShader:
-//             /* glsl */
-//             `
-// 		uniform mat4 textureMatrix;
-// 		varying vec4 vUv;
-
-// 		#include <common>
-// 		#include <logdepthbuf_pars_vertex>
-
-// 		void main() {
-
-// 			vUv = textureMatrix * vec4( position, 1.0 );
-
-// 			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
-// 			#include <logdepthbuf_vertex>
-
-// 		}`,
-//         fragmentShader:
-//             /* glsl */
-//             `
-// 		uniform vec3 color;
-// 		uniform sampler2D tDiffuse;
-// 		varying vec4 vUv;
-
-// 		#include <logdepthbuf_pars_fragment>
-
-// 		float blendOverlay( float base, float blend ) {
-
-// 			return( base < 0.5 ? ( 2.0 * base * blend ) : ( 1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );
-
-// 		}
-
-// 		vec3 blendOverlay( vec3 base, vec3 blend ) {
-
-// 			return vec3( blendOverlay( base.r, blend.r ), blendOverlay( base.g, blend.g ), blendOverlay( base.b, blend.b ) );
-
-// 		}
-
-// 		void main() {
-
-// 			#include <logdepthbuf_fragment>
-
-// 			vec4 base = texture2DProj( tDiffuse, vUv );
-// 			gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );
-
-// 		}`
-//     };
-//     THREE.Reflector = Reflector;
 // }
 
 
