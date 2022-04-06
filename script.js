@@ -91,7 +91,6 @@ cylinderRefractedBeam.rotation.set(0, 0, Math.PI / 2);
 scene.add(cylinderRefractedBeam);
 
 
-
 //-------------Green Cutting Board----------------
 loader.load("./assets/3D models glb/greenBoardFinal.glb", function (glb) {
     greenCuttingBoard = glb.scene;
@@ -110,15 +109,24 @@ loader.load("./assets/3D models glb/greenBoardFinal.glb", function (glb) {
 //-------------Mirror----------------
 const geometry = new THREE.PlaneGeometry(1, 1);
 
-// let plane = new Reflector(geometry, {
-//     clipBias: 0,
-//     textureWidth: window.innerWidth * window.devicePixelRatio,
-//     textureHeight: window.innerHeight * window.devicePixelRatio,
-//     color: 0x777777
-// });
+let plane = new Reflector(geometry, {
+    clipBias: 0,
+    textureWidth: window.innerWidth * window.devicePixelRatio,
+    textureHeight: window.innerHeight * window.devicePixelRatio,
+    color: 0x777777
+});
 
-const material = new THREE.MeshPhongMaterial({ color: "#111111", side: THREE.DoubleSide });
-const plane = new THREE.Mesh(geometry, material);
+// const material = new THREE.MeshPhysicalMaterial({
+//     reflectivity: 1.0,
+//     transmission: 1.0,
+//     roughness: 0,
+//     metalness: 0,
+//     clearcoat: 0.0,
+//     clearcoatRoughness: 0,
+//     color: new THREE.Color("#333333"),
+//     ior: 1.5,
+// });
+// const plane = new THREE.Mesh(geometry, material);
 plane.scale.set(3, 5, 1);
 plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
 plane.position.set(0 + sceneShiftX, 0, 0);
@@ -221,13 +229,14 @@ const renderer = new THREE.WebGL1Renderer({
 let color = 0xffffff;
 let intensity = 1;
 const light = new THREE.DirectionalLight(color, intensity);
+//light shadow
 light.position.set(10 + sceneShiftX, 6, 0);
 scene.add(light);
 
 intensity = 1.3;
 const light2 = new THREE.DirectionalLight(color, intensity);
-light2.position.set(2 + sceneShiftX, -2, 2);
-// scene.add(light2);
+light2.position.set(1 + sceneShiftX, 3, 1);
+scene.add(light2);
 const light4 = new THREE.AmbientLight(0xffffffff, 1.2); // soft white light
 scene.add(light4);
 const light7 = new THREE.AmbientLight(0xffffffff); // soft white light
@@ -247,7 +256,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.4;
 renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(canvas);
-renderer.setClearColor("#aaaaaa"); // whi/te background - replace ffffff with any hex color
+renderer.setClearColor("#333333"); // whi/te background - replace ffffff with any hex color
 
 
 //Orbit controlls
