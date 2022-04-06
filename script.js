@@ -19,7 +19,7 @@ const scene = new THREE.Scene();
 
 let raylength = 4, m = 1, n = 1, radiusRatio = 0.6;
 // let arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
-let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5;
+let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25;
 
 let sceneShiftX = -3;
 
@@ -91,6 +91,7 @@ cylinderRefractedBeam.rotation.set(0, 0, Math.PI / 2);
 scene.add(cylinderRefractedBeam);
 
 
+
 //-------------Green Cutting Board----------------
 loader.load("./assets/3D models glb/Green Cutting Board2.glb", function (glb) {
     greenCuttingBoard = glb.scene;
@@ -125,7 +126,26 @@ plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
 plane.position.set(0 + sceneShiftX, 0, 0);
 scene.add(plane);
 
-//Test object
+//----------Creating the transparent plane of reflection-------------
+const geometryPlane = new THREE.PlaneGeometry(1, 1);
+const materialPlane = new THREE.MeshPhongMaterial({ color: "lightblue", side: THREE.DoubleSide, opacity: 0.2, transparent: true });
+let reflectionPlane = new THREE.Mesh(geometryPlane, materialPlane);
+reflectionPlane.scale.set(3, 5, 1);
+reflectionPlane.rotation.set(Math.PI / 2, 0, 0);
+reflectionPlane.position.set(1.5 + sceneShiftX, 0, 0);
+scene.add(reflectionPlane);
+
+//----------Creating the Normal-------------
+const geometrynormal = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 1.67, 32);
+const materialnormal = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: "lightblue", shininess: 0, opacity: 0.8, transparent: true });
+let normal = new THREE.Mesh(geometrynormal, materialnormal);
+normal.scale.set(0.9, 0.9, 0.9);
+normal.rotation.set(0, 0, Math.PI / 2);
+normal.position.set(1.5 + sceneShiftX, 0, 0);
+scene.add(normal);
+
+
+//Test object -  it lies in the centre of the mirrow where the two rays meet(for making a seamless contact)
 const geometry2 = new THREE.SphereGeometry(.06, 20, 20);
 const material2 = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
 let testObject = new THREE.Mesh(geometry2, material2);
@@ -168,189 +188,7 @@ function laserPointer() {
 
     arrowModel2.position.set(xArrow + sceneShiftX, 0, -zArrow);
     arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
-    //Also put the laser in this part
-
-    //Laser texture
-    // let material1 = new THREE.MeshBasicMaterial({
-    //     blending: THREE.AdditiveBlending,
-    //     color: 0x4444aa,
-    //     side: THREE.DoubleSide,
-    //     depthWrite: false,
-    //     transparent: true
-    // });
-
-
 }
-
-//---------------------------Laser------------------------------
-// //Laser 
-// function LaserBeam(iconfig) {
-
-//     var config = {
-//         length: 100,
-//         reflectMax: 1
-//     };
-//     config = $.extend(config, iconfig);
-
-//     this.object3d = new THREE.Object3D();
-//     this.reflectObject = null;
-//     this.pointLight = new THREE.PointLight(0xffffff, 1, 4);
-//     var raycaster = new THREE.Raycaster();
-//     var canvas = generateLaserBodyCanvas();
-//     var texture = new THREE.Texture(canvas);
-//     texture.needsUpdate = true;
-
-//     //texture
-//     var material = new THREE.MeshBasicMaterial({
-//         map: texture,
-//         blending: THREE.AdditiveBlending,
-//         color: 0x4444aa,
-//         side: THREE.DoubleSide,
-//         depthWrite: false,
-//         transparent: true
-//     });
-//     var geometry = new THREE.PlaneGeometry(1, 0.1 * 5);
-//     geometry.rotateY(0.5 * Math.PI);
-
-//     //use planes to simulate laserbeam
-//     var i, nPlanes = 15;
-//     for (i = 0; i < nPlanes; i++) {
-//         var mesh = new THREE.Mesh(geometry, material);
-//         mesh.position.z = 1 / 2;
-//         mesh.rotation.z = i / nPlanes * Math.PI;
-//         this.object3d.add(mesh);
-//     }
-
-//     if (config.reflectMax > 0)
-//         this.reflectObject = new LaserBeam($.extend(config, {
-//             reflectMax: config.reflectMax - 1
-//         }));
-
-
-//     this.intersect = function (direction, objectArray = []) {
-
-//         raycaster.set(
-//             this.object3d.position.clone(),
-//             direction.clone().normalize()
-//         );
-
-//         var intersectArray = [];
-//         intersectArray = raycaster.intersectObjects(objectArray, true);
-
-//         //have collision
-//         if (intersectArray.length > 0) {
-//             this.object3d.scale.z = intersectArray[0].distance;
-//             this.object3d.lookAt(intersectArray[0].point.clone());
-//             this.pointLight.visible = true;
-
-//             //get normal vector
-//             var normalMatrix = new THREE.Matrix3().getNormalMatrix(intersectArray[0].object.matrixWorld);
-//             var normalVector = intersectArray[0].face.normal.clone().applyMatrix3(normalMatrix).normalize();
-
-//             //set pointLight under plane
-//             this.pointLight.position.x = intersectArray[0].point.x + normalVector.x * 0.5;
-//             this.pointLight.position.y = intersectArray[0].point.y + normalVector.y * 0.5;
-//             this.pointLight.position.z = intersectArray[0].point.z + normalVector.z * 0.5;
-
-//             //calculation reflect vector
-//             var reflectVector = new THREE.Vector3(
-//                 intersectArray[0].point.x - this.object3d.position.x,
-//                 intersectArray[0].point.y - this.object3d.position.y,
-//                 intersectArray[0].point.z - this.object3d.position.z
-//             ).normalize().reflect(normalVector);
-
-//             //set reflectObject
-//             if (this.reflectObject != null) {
-//                 this.reflectObject.object3d.visible = true;
-//                 this.reflectObject.object3d.position.set(
-//                     intersectArray[0].point.x,
-//                     intersectArray[0].point.y,
-//                     intersectArray[0].point.z
-//                 );
-
-//                 //iteration reflect
-//                 this.reflectObject.intersect(reflectVector.clone(), objectArray);
-//             }
-//         }
-//         //non collision
-//         else {
-//             this.object3d.scale.z = config.length;
-//             this.pointLight.visible = false;
-//             this.object3d.lookAt(
-//                 this.object3d.position.x + direction.x,
-//                 this.object3d.position.y + direction.y,
-//                 this.object3d.position.z + direction.z
-//             );
-
-//             this.hiddenReflectObject();
-//         }
-//     }
-
-//     this.hiddenReflectObject = function () {
-//         if (this.reflectObject != null) {
-//             this.reflectObject.object3d.visible = false;
-//             this.reflectObject.pointLight.visible = false;
-//             this.reflectObject.hiddenReflectObject();
-//         }
-//     }
-
-//     return;
-
-//     function generateLaserBodyCanvas() {
-//         var canvas = document.createElement('canvas');
-//         var context = canvas.getContext('2d');
-//         canvas.width = 1;
-//         canvas.height = 64;
-//         // set gradient
-//         var gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
-//         gradient.addColorStop(0, 'rgba(  0,  0,  0,0.1)');
-//         gradient.addColorStop(0.1, 'rgba(160,160,160,0.3)');
-//         gradient.addColorStop(0.5, 'rgba(255,255,255,0.5)');
-//         gradient.addColorStop(0.9, 'rgba(160,160,160,0.3)');
-//         gradient.addColorStop(1.0, 'rgba(  0,  0,  0,0.1)');
-//         // fill the rectangle
-//         context.fillStyle = gradient;
-//         context.fillRect(0, 0, canvas.width, canvas.height);
-//         // return the just built canvas 
-//         return canvas;
-//     }
-
-// }
-
-
-// // let LaserBeam1 = new LaserBeam({ reflectMax: 5 });
-// // scene.add(LaserBeam1);
-// // create and add a red laser in the scene
-// let laser = new Laser({ color: 0xff0000 });
-// console.log(laser);
-// scene.add(laser);
-
-// let pt = new THREE.Vector3(0, 0, -1); // the target point to shoot
-
-// // set the source point relative to the camera
-// // with offset (0.3, -0.4, -0.2)
-// laser.setSource(new THREE.Vector3(0.3, -0.4, -0.2), camera);
-
-// // shoot the target from the source point
-// laser.point(pt);
-
-//---------------------------Laser Ends------------------------------
-
-//---------------------------grid floor Ends------------------------------
-// const grid = new THREE.InfiniteGridHelper(10, 100);
-// grid.material.fragmentShader = grid.material.fragmentShader.replace('vec2 grid = abs(fract(r - 0.5) - 0.5) / fwidth(r);', 'vec2 grid = abs(fract(r - 0.5) - 0.5) / fwidth(r * 6.0);');
-// // let color = ;
-
-// gui.add(grid.material.uniforms.uSize1, "value", 2, 100).step(1).name("Size 1");
-// gui.add(grid.material.uniforms.uSize2, "value", 2, 1000).step(1).name("Size 2");
-// gui.add(grid.material.uniforms.uDistance, "value", 100, 10000).step(1).name("Distance");
-// gui.addColor({
-//     value: 0xffffff
-// }, "value").name("Color").onChange(function () { grid.material.uniforms.uColor.value.set(color.value); });;
-// scene.add(grid);
-//---------------------------grid floor Ends------------------------------
-
-
 
 //----------------------------Mirror Cube------------------------
 let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 8.1);
