@@ -45,8 +45,8 @@ loader.load("./assets/3D models glb/scene.glb", function (glb) {
 });
 
 //-----------Incident Laser Beam-----------------
-const geometryIncidentBeam = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 2, 32);
-const materialIncidentBeam = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
+const geometryIncidentBeam = new THREE.CylinderGeometry(0.04, 0.04, beamCentreRadius * 2, 32);
+const materialIncidentBeam = new THREE.MeshPhongMaterial({ color: 0x550000, emissive: 0xff0000, shininess: 0 });
 const cylinderIncidentBeam = new THREE.Mesh(geometryIncidentBeam, materialIncidentBeam);
 cylinderIncidentBeam.position.set(beamCentreRadius + sceneShiftX, 0, 0);
 cylinderIncidentBeam.scale.set(1, 1, 1);
@@ -59,7 +59,7 @@ loader.load("./assets/3D models glb/arrow.glb", function (glb) {
     arrowModel.position.set(arrow1Radius + sceneShiftX, 0, 0);
     arrowModel.scale.set(.5, .5, .5);
     arrowModel.rotation.set(0, 0, Math.PI / 2);
-    arrowModel.children[0].material = new THREE.MeshBasicMaterial({ color: 'red' });
+    arrowModel.children[0].material = new THREE.MeshPhongMaterial({ color: 0x550000, emissive: 0xff0000, shininess: 0 });
     // arrowModel.children[0].material.flatshading = false;
     // console.log();
     scene.add(arrowModel);
@@ -75,7 +75,7 @@ loader.load("./assets/3D models glb/arrow.glb", function (glb) {
     arrowModel2.position.set(arrow2Radius + sceneShiftX, 0, 0);
     arrowModel2.scale.set(.5, .5, .5);
     arrowModel2.rotation.set(0, Math.PI, Math.PI / 2);
-    arrowModel2.children[0].material = new THREE.MeshBasicMaterial({ color: 'red' });
+    arrowModel2.children[0].material = new THREE.MeshPhongMaterial({ color: 0x550000, emissive: 0xff0000, shininess: 0 });
     scene.add(arrowModel2);
 }, function (xhr) {
     console.log((xhr.loaded / xhr.total * 100) + "%loaded");
@@ -84,8 +84,8 @@ loader.load("./assets/3D models glb/arrow.glb", function (glb) {
 });
 
 //-----------Refracted Laser Beam-----------------
-const geometryRefractedBeam = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 2, 32);
-const materialRefractedBeam = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
+const geometryRefractedBeam = new THREE.CylinderGeometry(0.04, 0.04, beamCentreRadius * 2, 32);
+const materialRefractedBeam = new THREE.MeshPhongMaterial({ color: 0x550000, emissive: 0xff0000, shininess: 0 });
 const cylinderRefractedBeam = new THREE.Mesh(geometryRefractedBeam, materialRefractedBeam);
 cylinderRefractedBeam.position.set(beamCentreRadius + sceneShiftX, 0, 0);
 cylinderRefractedBeam.scale.set(1, 1, 1);
@@ -143,21 +143,21 @@ const material = new THREE.MeshPhysicalMaterial({
     metalness: 0,
     clearcoat: 0.0,
     clearcoatRoughness: 0,
-    color: new THREE.Color("#777777"),
+    color: new THREE.Color("#222222"),
     ior: 1.5,
 });
 const plane = new THREE.Mesh(geometry, material);
 plane.scale.set(3, 7, 1);
 plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
-plane.position.set(0 + sceneShiftX, 0, 0);
+plane.position.set(0 + sceneShiftX, 0.1, 0);
 scene.add(plane);
 
 //----------------------------Mirror Cube------------------------
-let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 7.1);
-let material1 = new THREE.MeshLambertMaterial({ color: "#222222" });
+let geometry1 = new THREE.BoxGeometry(0.05, 3.3, 7.1);
+let material1 = new THREE.MeshLambertMaterial({ color: "#ffffff" });
 
 let mirrorBack = new THREE.Mesh(geometry1, material1);
-mirrorBack.position.set(-0.03 + sceneShiftX, 0, 0)
+mirrorBack.position.set(-0.03 + sceneShiftX, 0.04, 0)
 scene.add(mirrorBack);
 //----------------------------Mirror Cube Ends------------------------
 
@@ -182,7 +182,7 @@ scene.add(reflectionPlane);
 
 
 //Test object -  it lies in the centre of the mirrow where the two rays meet(for making a seamless contact)
-const geometry2 = new THREE.SphereGeometry(.06, 20, 20);
+const geometry2 = new THREE.SphereGeometry(.04, 20, 20);
 const material2 = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: 0xff0000, shininess: 0 });
 let testObject = new THREE.Mesh(geometry2, material2);
 testObject.position.set(0 + sceneShiftX, 0, 0);
