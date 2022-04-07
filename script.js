@@ -19,7 +19,7 @@ const scene = new THREE.Scene();
 
 let raylength = 4, m = 1, n = 1, radiusRatio = 0.6;
 // let arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
-let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25, normalOpacity = 0.4, planeOpacity = 0.1, angleArcOpacity = normalOpacity;
+let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25, normalOpacity = 1, planeOpacity = 0.1, angleArcOpacity = 1;
 
 let sceneShiftX = -3;
 
@@ -37,7 +37,9 @@ loader.load("./assets/3D models glb/scene.glb", function (glb) {
     laserModel.scale.set(0.003, 0.003, 0.003);
     laserModel.rotation.set(0, 0, 0);
     // laserModel.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
+    // laserModel.castShadow = true;
     scene.add(laserModel);
+
 }, function (xhr) {
     console.log((xhr.loaded / xhr.total * 100) + "%loaded");
 }, function (error) {
@@ -155,7 +157,7 @@ scene.add(reflectionPlane);
 
 //----------Creating the Normal-------------
 const geometrynormal = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 1.67, 32);
-const materialnormal = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: "lightblue", shininess: 0, opacity: normalOpacity, transparent: true });
+const materialnormal = new THREE.MeshBasicMaterial({ color: "grey", opacity: normalOpacity, transparent: true });
 let normal = new THREE.Mesh(geometrynormal, materialnormal);
 normal.scale.set(0.9, 0.9, 0.9);
 normal.rotation.set(0, 0, Math.PI / 2);
@@ -172,13 +174,13 @@ scene.add(testObject);
 
 //Create an initial arc here
 let arcgeometry = new THREE.TorusGeometry(10, 3, 16, 100);
-let arcmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, opacity: 0, transparent: true });
+let arcmaterial = new THREE.MeshPhongMaterial({ color: "grey", opacity: 0, transparent: true });
 let arc = new THREE.Mesh(arcgeometry, arcmaterial);
 scene.add(arc);
 
 //Create an initial 2nd arc here
 let arcgeometry2 = new THREE.TorusGeometry(10, 3, 16, 100);
-let arcmaterial2 = new THREE.MeshBasicMaterial({ color: 0xffff00, opacity: 0, transparent: true });
+let arcmaterial2 = new THREE.MeshPhongMaterial({ color: "grey", opacity: 0, transparent: true });
 let arc2 = new THREE.Mesh(arcgeometry2, arcmaterial2);
 scene.add(arc2);
 
@@ -217,29 +219,12 @@ function laserPointer() {
     arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
     // let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25;
 
-    //Create Angle Arcs
-    scene.remove(arc);
-    arcgeometry = new THREE.TorusGeometry(arrow1Radius - 0.5, 0.05, 16, 64, theta); // radius, thickness
-    arcmaterial = new THREE.MeshBasicMaterial({ color: "#66bbbb", side: THREE.DoubleSide, opacity: angleArcOpacity, transparent: true });
-    arc = new THREE.Mesh(arcgeometry, arcmaterial);
-    //shift to new origin
-    arc.position.set(0 + sceneShiftX, 0, 0)
-    //rotate
-    arc.rotation.set(Math.PI / 2, 0, 0)
-    scene.add(arc);
-
-    //Create Angle Arcs
-    scene.remove(arc2);
-    arcgeometry2 = new THREE.TorusGeometry(arrow2Radius - 0.15, 0.05, 16, 64, theta); // radius, thickness
-    arcmaterial2 = new THREE.MeshBasicMaterial({ color: "#66bbbb", side: THREE.DoubleSide, opacity: angleArcOpacity, transparent: true });
-    arc2 = new THREE.Mesh(arcgeometry2, arcmaterial2);
-    //shift to new origin
-    arc2.position.set(0 + sceneShiftX, 0, 0)
-    //rotate
-    arc2.rotation.set(-Math.PI / 2, 0, 0)
-    scene.add(arc2);
-
-
+    if (document.getElementById("normalToggle").checked) {
+        //Destroy old arcs
+        destroyArcs();
+        //create arcs here
+        createArcs();
+    }
 }
 
 
@@ -343,13 +328,45 @@ document.getElementById("planeToggle").oninput = function () {
 document.getElementById("normalToggle").oninput = function () {
     if (document.getElementById("normalToggle").checked) {
         //set opacity/unhidden
+        // arc.material.opacity = angleArcOpacity;
+        // arc2.material.opacity = angleArcOpacity;
         normal.material.opacity = normalOpacity;
-        arc.material.opacity = normalOpacity;
-        arc2.material.opacity = normalOpacity;
+        //create arcs here
+        createArcs();
+
     }
     else {
         normal.material.opacity = 0;
-        arc.material.opacity = 0;
-        arc2.material.opacity = 0;
+        //destroy arcs here
+        destroyArcs();
+        // arc.material.opacity = 0;
+        // arc2.material.opacity = 0;
     }
+}
+function createArcs() {
+    let theta = document.getElementById("myRange").value;
+    //Create Angle Arcs
+    arcgeometry = new THREE.TorusGeometry(arrow1Radius - 0.5, 0.05, 16, 64, theta); // radius, thickness
+    arcmaterial = new THREE.MeshBasicMaterial({ color: "grey", opacity: angleArcOpacity, transparent: true });
+    arc = new THREE.Mesh(arcgeometry, arcmaterial);
+    //shift to new origin
+    arc.position.set(0 + sceneShiftX, 0, 0)
+    //rotate
+    arc.rotation.set(Math.PI / 2, 0, 0)
+    scene.add(arc);
+
+    //Create Angle Arcs
+    arcgeometry2 = new THREE.TorusGeometry(arrow2Radius - 0.15, 0.05, 16, 64, theta); // radius, thickness
+    arcmaterial2 = new THREE.MeshBasicMaterial({ color: "grey", opacity: angleArcOpacity, transparent: true });
+    arc2 = new THREE.Mesh(arcgeometry2, arcmaterial2);
+    //shift to new origin
+    arc2.position.set(0 + sceneShiftX, 0, 0)
+    //rotate
+    arc2.rotation.set(-Math.PI / 2, 0, 0)
+    scene.add(arc2);
+}
+
+function destroyArcs() {
+    scene.remove(arc);
+    scene.remove(arc2);
 }
