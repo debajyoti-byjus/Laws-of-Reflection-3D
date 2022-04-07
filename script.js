@@ -35,7 +35,8 @@ loader.load("./assets/3D models glb/scene.glb", function (glb) {
     laserModel.scale.set(0.003, 0.003, 0.003);
     laserModel.rotation.set(0, 0, 0);
     // laserModel.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
-    // laserModel.castShadow = true;
+    laserModel.children[0].castShadow = true;
+    laserModel.children[0].receiveShadow = false;
     scene.add(laserModel);
 
 }, function (xhr) {
@@ -100,6 +101,8 @@ loader.load("./assets/3D models glb/greenBoardFinal.glb", function (glb) {
     greenCuttingBoard.scale.set(6.5, 6.5, 6.5);
     greenCuttingBoard.rotation.set(0, 0, 0);
     // greenCuttingBoard.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
+    greenCuttingBoard.children[0].receiveShadow = true;
+    greenCuttingBoard.children[0].castShadow = false;
     scene.add(greenCuttingBoard);
 }, function (xhr) {
     console.log((xhr.loaded / xhr.total * 100) + "%loaded");
@@ -260,6 +263,9 @@ const renderer = new THREE.WebGL1Renderer({
     canvas: canvas,
     antialias: true,
 });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+
 
 
 //LIGHTING
@@ -268,12 +274,15 @@ let intensity = 1;
 const light = new THREE.DirectionalLight(color, intensity);
 //light shadow
 light.position.set(10 + sceneShiftX, 6, 0);
+light.castShadow = true;
 scene.add(light);
 
 intensity = 1.3;
 const light2 = new THREE.DirectionalLight(color, intensity);
 light2.position.set(1 + sceneShiftX, 3, 1);
-scene.add(light2);
+// light2.castShadow = true;
+// scene.add(light2);
+
 const light4 = new THREE.AmbientLight(0xffffffff, 1.2); // soft white light
 scene.add(light4);
 const light7 = new THREE.AmbientLight(0xffffffff); // soft white light
@@ -295,10 +304,14 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(canvas);
 renderer.setClearColor("#333333"); // whi/te background - replace ffffff with any hex color
 
+// const helper = new THREE.CameraHelper( light.shadow.camera );
+// scene.add( helper );
 
 //Orbit controlls
 const controls = new OrbitControls(camera, canvas);
 renderer.render(scene, camera);
+
+
 
 let timeVar = 1;
 function animate() {
