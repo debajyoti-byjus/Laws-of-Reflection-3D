@@ -19,7 +19,7 @@ const scene = new THREE.Scene();
 
 let raylength = 4, m = 1, n = 1, radiusRatio = 0.6;
 // let arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
-let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25;
+let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25, normalOpacity = 0.4, planeOpacity = 0.1, angleArcOpacity = normalOpacity;
 
 let sceneShiftX = -3;
 
@@ -60,6 +60,8 @@ loader.load("./assets/3D models glb/arrow.glb", function (glb) {
     arrowModel.scale.set(.5, .5, .5);
     arrowModel.rotation.set(0, 0, Math.PI / 2);
     arrowModel.children[0].material = new THREE.MeshBasicMaterial({ color: 'red' });
+    // arrowModel.children[0].material.flatshading = false;
+    // console.log();
     scene.add(arrowModel);
 }, function (xhr) {
     console.log((xhr.loaded / xhr.total * 100) + "%loaded");
@@ -109,32 +111,32 @@ loader.load("./assets/3D models glb/greenBoardFinal.glb", function (glb) {
 //-------------Mirror----------------
 const geometry = new THREE.PlaneGeometry(1, 1);
 
-let plane = new Reflector(geometry, {
-    clipBias: 0,
-    textureWidth: window.innerWidth * window.devicePixelRatio,
-    textureHeight: window.innerHeight * window.devicePixelRatio,
-    color: 0x777777
-});
-
-// const material = new THREE.MeshPhysicalMaterial({
-//     reflectivity: 1.0,
-//     transmission: 1.0,
-//     roughness: 0,
-//     metalness: 0,
-//     clearcoat: 0.0,
-//     clearcoatRoughness: 0,
-//     color: new THREE.Color("#333333"),
-//     ior: 1.5,
+// let plane = new Reflector(geometry, {
+//     clipBias: 0,
+//     textureWidth: window.innerWidth * window.devicePixelRatio,
+//     textureHeight: window.innerHeight * window.devicePixelRatio,
+//     color: 0x777777
 // });
-// const plane = new THREE.Mesh(geometry, material);
-plane.scale.set(3, 5, 1);
+
+const material = new THREE.MeshPhysicalMaterial({
+    reflectivity: 1.0,
+    transmission: 1,
+    roughness: 0,
+    metalness: 0,
+    clearcoat: 0.0,
+    clearcoatRoughness: 0,
+    color: new THREE.Color("#777777"),
+    ior: 1.5,
+});
+const plane = new THREE.Mesh(geometry, material);
+plane.scale.set(3, 7, 1);
 plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
 plane.position.set(0 + sceneShiftX, 0, 0);
 scene.add(plane);
 
 //----------------------------Mirror Cube------------------------
-let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 5.1);
-let material1 = new THREE.MeshLambertMaterial({ color: "grey" });
+let geometry1 = new THREE.BoxGeometry(0.05, 3.1, 7.1);
+let material1 = new THREE.MeshLambertMaterial({ color: "#222222" });
 
 let mirrorBack = new THREE.Mesh(geometry1, material1);
 mirrorBack.position.set(-0.03 + sceneShiftX, 0, 0)
@@ -144,7 +146,7 @@ scene.add(mirrorBack);
 
 //----------Creating the transparent plane of reflection-------------
 const geometryPlane = new THREE.PlaneGeometry(1, 1);
-const materialPlane = new THREE.MeshPhongMaterial({ color: "lightblue", side: THREE.DoubleSide, opacity: 0.2, transparent: true });
+const materialPlane = new THREE.MeshPhongMaterial({ color: "#555555", side: THREE.DoubleSide, opacity: planeOpacity, transparent: true });
 let reflectionPlane = new THREE.Mesh(geometryPlane, materialPlane);
 reflectionPlane.scale.set(3, 5, 1);
 reflectionPlane.rotation.set(Math.PI / 2, 0, 0);
@@ -153,7 +155,7 @@ scene.add(reflectionPlane);
 
 //----------Creating the Normal-------------
 const geometrynormal = new THREE.CylinderGeometry(0.06, 0.06, beamCentreRadius * 1.67, 32);
-const materialnormal = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: "lightblue", shininess: 0, opacity: 0.8, transparent: true });
+const materialnormal = new THREE.MeshPhongMaterial({ color: 0x000000, emissive: "lightblue", shininess: 0, opacity: normalOpacity, transparent: true });
 let normal = new THREE.Mesh(geometrynormal, materialnormal);
 normal.scale.set(0.9, 0.9, 0.9);
 normal.rotation.set(0, 0, Math.PI / 2);
@@ -168,8 +170,17 @@ let testObject = new THREE.Mesh(geometry2, material2);
 testObject.position.set(0 + sceneShiftX, 0, 0);
 scene.add(testObject);
 
-//Create a Laser here
+//Create an initial arc here
+let arcgeometry = new THREE.TorusGeometry(10, 3, 16, 100);
+let arcmaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, opacity: 0, transparent: true });
+let arc = new THREE.Mesh(arcgeometry, arcmaterial);
+scene.add(arc);
 
+//Create an initial 2nd arc here
+let arcgeometry2 = new THREE.TorusGeometry(10, 3, 16, 100);
+let arcmaterial2 = new THREE.MeshBasicMaterial({ color: 0xffff00, opacity: 0, transparent: true });
+let arc2 = new THREE.Mesh(arcgeometry2, arcmaterial2);
+scene.add(arc2);
 
 //-------LASER position wrt slider --------------
 function laserPointer() {
@@ -204,6 +215,31 @@ function laserPointer() {
 
     arrowModel2.position.set(xArrow + sceneShiftX, 0, -zArrow);
     arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
+    // let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25;
+
+    //Create Angle Arcs
+    scene.remove(arc);
+    arcgeometry = new THREE.TorusGeometry(arrow1Radius - 0.5, 0.05, 16, 64, theta); // radius, thickness
+    arcmaterial = new THREE.MeshBasicMaterial({ color: "#66bbbb", side: THREE.DoubleSide, opacity: angleArcOpacity, transparent: true });
+    arc = new THREE.Mesh(arcgeometry, arcmaterial);
+    //shift to new origin
+    arc.position.set(0 + sceneShiftX, 0, 0)
+    //rotate
+    arc.rotation.set(Math.PI / 2, 0, 0)
+    scene.add(arc);
+
+    //Create Angle Arcs
+    scene.remove(arc2);
+    arcgeometry2 = new THREE.TorusGeometry(arrow2Radius - 0.15, 0.05, 16, 64, theta); // radius, thickness
+    arcmaterial2 = new THREE.MeshBasicMaterial({ color: "#66bbbb", side: THREE.DoubleSide, opacity: angleArcOpacity, transparent: true });
+    arc2 = new THREE.Mesh(arcgeometry2, arcmaterial2);
+    //shift to new origin
+    arc2.position.set(0 + sceneShiftX, 0, 0)
+    //rotate
+    arc2.rotation.set(-Math.PI / 2, 0, 0)
+    scene.add(arc2);
+
+
 }
 
 
@@ -222,7 +258,7 @@ scene.add(camera);
 const renderer = new THREE.WebGL1Renderer({
     canvas: canvas,
     antialias: true,
-})
+});
 
 
 //LIGHTING
@@ -298,7 +334,7 @@ document.getElementById("myRange").oninput = function () {
 document.getElementById("planeToggle").oninput = function () {
     if (document.getElementById("planeToggle").checked) {
         //set opacity/unhidden
-        reflectionPlane.material.opacity = 0.2;
+        reflectionPlane.material.opacity = planeOpacity;
     }
     else {
         reflectionPlane.material.opacity = 0;
@@ -307,9 +343,13 @@ document.getElementById("planeToggle").oninput = function () {
 document.getElementById("normalToggle").oninput = function () {
     if (document.getElementById("normalToggle").checked) {
         //set opacity/unhidden
-        normal.material.opacity = 0.8;
+        normal.material.opacity = normalOpacity;
+        arc.material.opacity = normalOpacity;
+        arc2.material.opacity = normalOpacity;
     }
     else {
         normal.material.opacity = 0;
+        arc.material.opacity = 0;
+        arc2.material.opacity = 0;
     }
 }
