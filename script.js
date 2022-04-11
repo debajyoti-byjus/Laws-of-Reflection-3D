@@ -286,25 +286,112 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 camera.layers.enableAll();
 // camera.layers.toggle(1);
 
-const axesHelper = new THREE.AxesHelper(7);
-axesHelper.layers.enableAll();
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(7);
+// axesHelper.layers.enableAll();
+// scene.add(axesHelper);
 
 const mirrorDiv = document.createElement('div');
 mirrorDiv.className = 'label';
 mirrorDiv.textContent = 'Mirror';
 mirrorDiv.style.marginTop = '-1em';
-mirrorDiv.style.backgroundColor = '#ffffffaa'; //faint border
+mirrorDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
+mirrorDiv.style.backdropFilter = "blur(5px)";
 mirrorDiv.style.borderRadius = "0.3em";
 mirrorDiv.style.padding = '.3em .5em';
-
 const mirrorLabel = new CSS2DObject(mirrorDiv);
-
-
 // --------------------CONTROL THE LABEL HERE!! -----------------
 mirrorLabel.position.set(0.25, -0.25, 0);
 plane.add(mirrorLabel);
 mirrorLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+const incidentRayDiv = document.createElement('div');
+incidentRayDiv.className = 'label';
+incidentRayDiv.textContent = 'Incident Ray';
+incidentRayDiv.style.marginTop = '-1em';
+incidentRayDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
+incidentRayDiv.style.backdropFilter = "blur(5px)";
+incidentRayDiv.style.borderRadius = "0.3em";
+incidentRayDiv.style.padding = '.3em .5em';
+const incidentRayLabel = new CSS2DObject(incidentRayDiv);
+// --------------------CONTROL THE LABEL HERE!! -----------------
+//********************************************************************* */
+// incidentRayDiv.style.opacity = '0';    
+//*******************  //change this to show or hide the labels!!!!!!!!!!!!
+incidentRayLabel.position.set(0, 0.15, 1.5);
+plane.add(incidentRayLabel);
+incidentRayLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+
+
+const reflectedRayDiv = document.createElement('div');
+reflectedRayDiv.className = 'label';
+reflectedRayDiv.textContent = 'reflected Ray';
+reflectedRayDiv.style.marginTop = '-1em';
+reflectedRayDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
+reflectedRayDiv.style.backdropFilter = "blur(5px)";
+reflectedRayDiv.style.borderRadius = "0.3em";
+reflectedRayDiv.style.padding = '.3em .5em';
+const reflectedRayLabel = new CSS2DObject(reflectedRayDiv);
+// --------------------CONTROL THE LABEL HERE!! -----------------
+//********************************************************************* */
+// reflectedRayDiv.style.opacity = '0';    
+//*******************  //change this to show or hide the labels!!!!!!!!!!!!
+reflectedRayLabel.position.set(0, -0.15, 1.5);
+plane.add(reflectedRayLabel);
+reflectedRayLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+
+
+const normalDiv = document.createElement('div');
+normalDiv.className = 'label';
+normalDiv.textContent = 'normal';
+normalDiv.style.marginTop = '-1em';
+normalDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
+normalDiv.style.backdropFilter = "blur(5px)";
+normalDiv.style.borderRadius = "0.3em";
+normalDiv.style.padding = '.3em .5em';
+const normalLabel = new CSS2DObject(normalDiv);
+// --------------------CONTROL THE LABEL HERE!! -----------------
+//********************************************************************* */
+// normalDiv.style.opacity = '0';    
+//*******************  //change this to show or hide the labels!!!!!!!!!!!!
+normalLabel.position.set(-0.1, 0, 3);
+plane.add(normalLabel);
+normalLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+
+
+
+const laserPointerDiv = document.createElement('div');
+laserPointerDiv.className = 'label';
+laserPointerDiv.textContent = 'Laser Pointer';
+laserPointerDiv.style.marginTop = '-1em';
+laserPointerDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
+laserPointerDiv.style.backdropFilter = "blur(5px)";
+laserPointerDiv.style.borderRadius = "0.3em";
+laserPointerDiv.style.padding = '.3em .5em';
+const laserPointerLabel = new CSS2DObject(laserPointerDiv);
+// --------------------CONTROL THE LABEL HERE!! -----------------
+//********************************************************************* */
+// laserPointerDiv.style.opacity = '0';    
+//*******************  //change this to show or hide the labels!!!!!!!!!!!!
+laserPointerLabel.position.set(-0.1, 0.5, 5);
+plane.add(laserPointerLabel);
+laserPointerLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+
+
+
 
 let labelRenderer = new CSS2DRenderer();
 labelRenderer.setSize(window.innerWidth, window.innerHeight);

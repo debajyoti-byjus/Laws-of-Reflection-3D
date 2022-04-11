@@ -8,6 +8,7 @@
     width: 35%;
     top: 7%;
     left: 50%;
+    z-index: 5;
 }
 
 .slider {
@@ -64,6 +65,8 @@
     accent-color: greenyellow;
     padding: 0.3rem;
     border-radius: 0.3rem;
+    z-index: 5;
+
 }
 
 #planeToggle {
@@ -75,6 +78,8 @@
     accent-color: greenyellow;
     padding: 0.3rem;
     border-radius: 0.3rem;
+    z-index: 5;
+
 }
 
 #labelplaneid {
