@@ -3,11 +3,13 @@ import * as THREE from "./js/three.module.js";
 import { GLTFLoader } from './js/GLTFLoader.js';
 import { OrbitControls } from './js/OrbitControls.js';
 import { Reflector } from './js/Reflector.js';
+import { CSS2DRenderer, CSS2DObject } from './js/CSS2DRenderer.js';
 
-import { EffectComposer } from './js/EffectComposer.js';
-import { RenderPass } from './js/RenderPass.js';
-
+// import { EffectComposer } from './js/EffectComposer.js';
+// import { RenderPass } from './js/RenderPass.js';
 // import { InfiniteGridHelper } from "./js/InfiniteGridHelper.js";
+
+// -------------------import from CDN -------------------------
 // import * as THREE from 'https://cdn.skypack.dev/three@0.129.0/build/three.module.js';
 // import { OrbitControls } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js';
 // import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js';
@@ -23,11 +25,25 @@ let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadi
 let sceneShiftX = -3;
 let root1, root2, root3, laserModel, greenCuttingBoard, arrowModel2, arrowModel, normalDottedModel, scaleval = 0.8;
 let roughness0 = 0, transmission1 = 0.9, thick1 = 0;
-let tag;
+// let tag, gui;
+// const layers = {
+//     'Toggle MirrorName': function () {
+//         camera.layers.toggle(0);
+//     },
+//     'Toggle LaserName': function () {
+//         camera.layers.toggle(1);
+//     },
+//     'Enable All': function () {
+//         camera.layers.enableAll();
+//     },
+//     'Disable All': function () {
+//         camera.layers.disableAll();
+//     }
+// }
+
 let root1Material;
 // loading
 const loader = new GLTFLoader();
-
 //-------------LASER Pointer ----------------
 loader.load("./assets/3D models glb/scene.glb", function (glb) {
     laserModel = glb.scene;
@@ -244,10 +260,9 @@ function laserPointer() {
         //create arcs here
         createArcs();
     }
+    let angleOfIncidence = theta * 180.0 / Math.PI;
+    document.getElementById("anglelabelid").innerHTML = "i = " + Math.round(angleOfIncidence).toString() + " &deg;";
 }
-
-
-
 
 //---------------Boilerplate code----------------
 const sizes = {
@@ -267,32 +282,52 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
 
+//----------------------css2d---------------------
+camera.layers.enableAll();
+// camera.layers.toggle(1);
+
+const axesHelper = new THREE.AxesHelper(7);
+axesHelper.layers.enableAll();
+scene.add(axesHelper);
+
+const mirrorDiv = document.createElement('div');
+mirrorDiv.className = 'label';
+mirrorDiv.textContent = 'Mirror';
+mirrorDiv.style.marginTop = '-1em';
+mirrorDiv.style.backgroundColor = '#ffffffaa'; //faint border
+mirrorDiv.style.borderRadius = "0.3em";
+mirrorDiv.style.padding = '.3em .5em';
+
+const mirrorLabel = new CSS2DObject(mirrorDiv);
+
+
+// --------------------CONTROL THE LABEL HERE!! -----------------
+mirrorLabel.position.set(0.25, -0.25, 0);
+plane.add(mirrorLabel);
+mirrorLabel.layers.set(0); //change this to show or hide the labels
+
+let labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0px';
+document.body.appendChild(labelRenderer.domElement);
+//-------------------css2d ends-----------------------
+
 
 //LIGHTING
-let color = 0xffffff;
-let intensity = 1;
-const light = new THREE.DirectionalLight(color, intensity);
-//light shadow
-light.position.set(10 + sceneShiftX, 6, 0);
-light.castShadow = true;
-scene.add(light);
+//DIR LIGHTING
+let dirLight1 = new THREE.DirectionalLight(0xffffff, 3);
+dirLight1.position.set(10 + sceneShiftX, 6, 0);
+dirLight1.castShadow = true;
+dirLight1.layers.enableAll(); //so t
+scene.add(dirLight1);
 
-intensity = 1.3;
-const light2 = new THREE.DirectionalLight(color, intensity);
-light2.position.set(1 + sceneShiftX, 3, 1);
-// light2.castShadow = true;
-// scene.add(light2);
+//Ambient LIGHTING
+let ambient1 = new THREE.AmbientLight(0xffffffff, 1.2); // soft white light
+ambient1.layers.enableAll();
+scene.add(ambient1);
 
-const light4 = new THREE.AmbientLight(0xffffffff, 1.2); // soft white light
-scene.add(light4);
-const light7 = new THREE.AmbientLight(0xffffffff); // soft white light
-// scene.add(light7);
-const light3 = new THREE.DirectionalLight(color, intensity);
-light3.position.set(0 + sceneShiftX, 0, -3);
-// scene.add(light3);
-const light8 = new THREE.DirectionalLight(color, intensity);
-light8.position.set(-2 + sceneShiftX, 0, 0);
-// scene.add(light8);
+
 renderer.setSize(sizes.width, sizes.height);
 // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -308,7 +343,7 @@ renderer.setClearColor("#333333"); // whi/te background - replace ffffff with an
 // scene.add( helper );
 
 //Orbit controlls
-const controls = new OrbitControls(camera, canvas);
+const controls = new OrbitControls(camera, labelRenderer.domElement);
 renderer.render(scene, camera);
 
 
@@ -323,6 +358,7 @@ function animate() {
     // laserModel.rotation.x += 0.01;
     // console.log(laserModel.rotation.x);
     renderer.render(scene, camera);
+    labelRenderer.render(scene, camera);
     timeVar++;
     if (timeVar == 30) { //ERROR MAY OCCUR HERE TOO
         laserPointer();
@@ -401,3 +437,30 @@ function destroyArcs() {
     scene.remove(arc);
     scene.remove(arc2);
 }
+
+async function guidedAnimation() {     // Async function
+    // show mirror label
+
+    // Laser pointer label
+    // incident ray
+    // reflected ray    
+}
+
+
+// See what happens to the reflected ray when we move the angle of the pointer.
+// Here the angle of the incidence, i, is equal to the angle of relection, r.
+
+//change the camera view to show that the normal, incident ray and the relfected rays all lie on the same plane
+
+
+
+
+//1. make markers for
+/**
+ * 1. laser pointer
+ * 2. Mirror
+ * 3. normal
+ * 4. incident ray (if angle greater than certain angle show it, else hide)
+ * 5. reflected ray
+ * 6. 
+ */
