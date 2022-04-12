@@ -303,7 +303,7 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, 0.1, 100);
 camera.position.set(0, 12, 0);
 // camera.rotation.set(1, Math.PI, 0.5);
 
@@ -523,6 +523,9 @@ renderer.setClearColor("#333333"); // whi/te background - replace ffffff with an
 
 //Orbit controlls
 const controls = new OrbitControls(camera, labelRenderer.domElement);
+controls.minAzimuthAngle = 1.6;
+controls.maxAzimuthAngle = 1.7;
+
 // const cameraControls = new CameraControls(camera, renderer.domElement);
 // CameraControls.rotateTo(0, 0, enableTransition);
 renderer.render(scene, camera);
@@ -628,6 +631,11 @@ function createArcs() {
     scene.add(arc2);
 }
 
+/**Sourav's advise to write better code below-
+ * LAser -- values, fucntions, label objects
+ * laser.polarangle = ... 
+ */
+
 function destroyArcs() {
     scene.remove(arc);
     scene.remove(arc2);
@@ -636,6 +644,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 guidedAnimation();
+
 async function guidedAnimation() {     // Async function
     //hiding Checkboxes
     document.getElementById("labelplaneid").style.display = "none";
@@ -650,39 +659,39 @@ async function guidedAnimation() {     // Async function
 
     // Laser pointer label
     await sleep(1500);
-    mirrorDiv.style.opacity = '0';
+    // mirrorDiv.style.opacity = '0';
     laserPointerDiv.style.opacity = '1';
     // camera.position.set(4.3, 10.3, 4.7);
 
 
     // incident ray
     await sleep(1500);
-    laserPointerDiv.style.opacity = '0';
+    // laserPointerDiv.style.opacity = '0';
     incidentRayDiv.style.opacity = '1';
 
     // reflected ray    
     await sleep(1500);
-    incidentRayDiv.style.opacity = '0';
+    // incidentRayDiv.style.opacity = '0';
     reflectedRayDiv.style.opacity = '1';
 
     // normal ray    
     await sleep(1500);
-    reflectedRayDiv.style.opacity = '0';
+    // reflectedRayDiv.style.opacity = '0';
     normalDiv.style.opacity = '1';
     await sleep(1500);
 
     // normal ray    
     await sleep(1500);
-    normalDiv.style.opacity = '0';
+    // normalDiv.style.opacity = '0';
     angleiDiv.style.opacity = '1';
     await sleep(1500);
 
     // normal ray    
     await sleep(1500);
-    angleiDiv.style.opacity = '0';
+    // angleiDiv.style.opacity = '0';
     anglerDiv.style.opacity = '1';
     await sleep(1500);
-    anglerDiv.style.opacity = '0';
+    // anglerDiv.style.opacity = '0';
 
 
     //all labels shown
