@@ -5,6 +5,12 @@ import { OrbitControls } from './js/OrbitControls.js';
 import { Reflector } from './js/Reflector.js';
 import { CSS2DRenderer, CSS2DObject } from './js/CSS2DRenderer.js';
 
+//camera controls
+// import { CameraControls } from './js/CameraControls.js';
+// CameraControls.install({ THREE: THREE });
+
+
+
 // import { EffectComposer } from './js/EffectComposer.js';
 // import { RenderPass } from './js/RenderPass.js';
 // import { InfiniteGridHelper } from "./js/InfiniteGridHelper.js";
@@ -25,21 +31,6 @@ let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadi
 let sceneShiftX = -3;
 let root1, root2, root3, laserModel, greenCuttingBoard, arrowModel2, arrowModel, normalDottedModel, scaleval = 0.8;
 let roughness0 = 0, transmission1 = 0.9, thick1 = 0;
-// let tag, gui;
-// const layers = {
-//     'Toggle MirrorName': function () {
-//         camera.layers.toggle(0);
-//     },
-//     'Toggle LaserName': function () {
-//         camera.layers.toggle(1);
-//     },
-//     'Enable All': function () {
-//         camera.layers.enableAll();
-//     },
-//     'Disable All': function () {
-//         camera.layers.disableAll();
-//     }
-// }
 
 //TUTORIAL State Variables
 let isSliderClicked = 0, tutorialStage = -1, sliderLeftScanned = 0, sliderRightScanned = 0;
@@ -49,6 +40,7 @@ let isSliderClicked = 0, tutorialStage = -1, sliderLeftScanned = 0, sliderRightS
  * tutorialStage--
  * = 0 then its label showing stage
  * = 1, then intial popup to drag slider is visible.
+ * = 2, then next button is visible
  */
 
 let root1Material;
@@ -217,6 +209,30 @@ let testObject = new THREE.Mesh(geometry2, material2);
 testObject.position.set(0 + sceneShiftX, 0, 0);
 scene.add(testObject);
 
+// Test object for LASER LABEL
+const geometry6 = new THREE.PlaneGeometry(0.01, 0.01);
+const material6 = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0, transparent: true });
+let testObject22 = new THREE.Mesh(geometry6, material6);
+testObject22.position.set(0 + sceneShiftX, 0, 0);
+scene.add(testObject22);
+
+// Test object for <i LABEL
+const geometry7 = new THREE.PlaneGeometry(0.1, 0.1);
+const material7 = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 0, transparent: true });
+let testObject23 = new THREE.Mesh(geometry7, material7);
+testObject23.position.set(0 + sceneShiftX, 0, 0);
+scene.add(testObject23);
+
+
+// Test object for <r LABEL
+const geometry8 = new THREE.PlaneGeometry(0.01, 0.01);
+const material8 = new THREE.MeshBasicMaterial({ color: 0x000000, opacity: 1, transparent: true });
+let testObject24 = new THREE.Mesh(geometry8, material8);
+testObject24.position.set(0 + sceneShiftX, 0, 0);
+scene.add(testObject24);
+
+
+
 //Create an initial arc here
 let arcgeometry = new THREE.TorusGeometry(10, 3, 16, 100);
 let arcmaterial = new THREE.MeshPhongMaterial({ color: "grey", opacity: 0, transparent: true });
@@ -242,6 +258,7 @@ function laserPointer() {
     z = laserPointerRadius * Math.sin(theta);
 
     laserModel.position.set(x + sceneShiftX, 0, z);
+    testObject22.position.set(x + sceneShiftX, 0, z);
     laserModel.rotation.set(0, -theta, 0);
     let xLaserStart = beamCentreRadius * Math.cos(theta);
     let zLaserStart = beamCentreRadius * Math.sin(theta);
@@ -264,6 +281,12 @@ function laserPointer() {
     arrowModel2.position.set(xArrow + sceneShiftX, 0, -zArrow);
     arrowModel2.rotation.set(0, theta - Math.PI, Math.PI / 2);
     // let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25;
+
+    //positioning the testobject(for positioning the i and r labels)
+    testObject23.position.set(arrow1Radius / 2 * Math.cos(theta / 1.2) + sceneShiftX, -0.4, arrow1Radius / 2 * Math.sin(theta / 1.2));
+
+    testObject24.position.set(arrow1Radius / 1.5 * Math.cos(theta / 1.2) + sceneShiftX, -0.4, -arrow1Radius / 1.5 * Math.sin(theta / 1.2));
+
 
     if (document.getElementById("normalToggle").checked) {
         //Destroy old arcs
@@ -297,9 +320,9 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 camera.layers.enableAll();
 // camera.layers.toggle(1);
 
-// const axesHelper = new THREE.AxesHelper(7);
-// axesHelper.layers.enableAll();
-// scene.add(axesHelper);
+const axesHelper = new THREE.AxesHelper(7);
+axesHelper.layers.enableAll();
+scene.add(axesHelper);
 
 const mirrorDiv = document.createElement('div');
 mirrorDiv.className = 'label';
@@ -333,8 +356,8 @@ const incidentRayLabel = new CSS2DObject(incidentRayDiv);
 //********************************************************************* */
 incidentRayDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
-incidentRayLabel.position.set(0, 0.15, 1.5);
-plane.add(incidentRayLabel);
+incidentRayLabel.position.set(0, 0, 0);
+cylinderIncidentBeam.add(incidentRayLabel);
 incidentRayLabel.layers.set(0); //change this to show or hide the labels
 
 
@@ -355,8 +378,8 @@ const reflectedRayLabel = new CSS2DObject(reflectedRayDiv);
 //********************************************************************* */
 reflectedRayDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
-reflectedRayLabel.position.set(0, -0.15, 1.5);
-plane.add(reflectedRayLabel);
+reflectedRayLabel.position.set(0, 0, 0);
+cylinderRefractedBeam.add(reflectedRayLabel);
 reflectedRayLabel.layers.set(0); //change this to show or hide the labels
 
 
@@ -400,9 +423,61 @@ const laserPointerLabel = new CSS2DObject(laserPointerDiv);
 //********************************************************************* */
 laserPointerDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
-laserPointerLabel.position.set(-0.1, 0.5, 5);
-plane.add(laserPointerLabel);
+laserPointerLabel.position.set(0, 0, 0);
+
+testObject22.add(laserPointerLabel);
 laserPointerLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+
+
+
+const angleiDiv = document.createElement('div');
+angleiDiv.className = 'label';
+angleiDiv.textContent = 'i ';
+angleiDiv.style.marginTop = '-1em';
+angleiDiv.style.backgroundColor = '#aaaaaa00'; //faint border
+// angleiDiv.style.backdropFilter = "blur(1px)";
+angleiDiv.style.borderRadius = "0.3em";
+angleiDiv.style.padding = '.3em .5em';
+angleiDiv.style.fontSize = "2em";
+angleiDiv.style.color = "white";
+const angleiLabel = new CSS2DObject(angleiDiv);
+// --------------------CONTROL THE LABEL HERE!! -----------------
+//********************************************************************* */
+angleiDiv.style.opacity = '0';
+//*******************  //change this to show or hide the labels!!!!!!!!!!!!
+angleiLabel.position.set(0, 0, 0);
+
+testObject23.add(angleiLabel);
+angleiLabel.layers.set(0); //change this to show or hide the labels
+
+
+
+
+
+
+
+const anglerDiv = document.createElement('div');
+anglerDiv.className = 'label';
+anglerDiv.textContent = 'r';
+anglerDiv.style.marginTop = '-1em';
+anglerDiv.style.backgroundColor = '#aaaaaa00'; //faint border
+// anglerDiv.style.backdropFilter = "blur(1px)";
+anglerDiv.style.borderRadius = "0.3em";
+anglerDiv.style.padding = '.3em .5em';
+anglerDiv.style.fontSize = "2em";
+anglerDiv.style.color = "white";
+const anglerLabel = new CSS2DObject(anglerDiv);
+// --------------------CONTROL THE LABEL HERE!! -----------------
+//********************************************************************* */
+anglerDiv.style.opacity = '0';
+//*******************  //change this to show or hide the labels!!!!!!!!!!!!
+anglerLabel.position.set(0, 0, 0);
+
+testObject24.add(anglerLabel);
+anglerLabel.layers.set(0); //change this to show or hide the labels
 
 
 
@@ -448,6 +523,8 @@ renderer.setClearColor("#333333"); // whi/te background - replace ffffff with an
 
 //Orbit controlls
 const controls = new OrbitControls(camera, labelRenderer.domElement);
+// const cameraControls = new CameraControls(camera, renderer.domElement);
+// CameraControls.rotateTo(0, 0, enableTransition);
 renderer.render(scene, camera);
 
 
@@ -481,6 +558,7 @@ function animate() {
 animate(); // this gets called before the model gets loaded.
 
 document.getElementById("myRange").oninput = function () {
+
     if (tutorialStage == 1) {
         isSliderClicked = 1;
         document.getElementById("tutorial1").style.display = "none";
@@ -567,32 +645,45 @@ async function guidedAnimation() {     // Async function
 
     tutorialStage = 0;
     // show mirror label
-    await sleep(500);
+    await sleep(1500);
     mirrorDiv.style.opacity = '1';
 
     // Laser pointer label
-    await sleep(500);
+    await sleep(1500);
     mirrorDiv.style.opacity = '0';
     laserPointerDiv.style.opacity = '1';
     // camera.position.set(4.3, 10.3, 4.7);
 
 
     // incident ray
-    await sleep(500);
+    await sleep(1500);
     laserPointerDiv.style.opacity = '0';
     incidentRayDiv.style.opacity = '1';
 
     // reflected ray    
-    await sleep(500);
+    await sleep(1500);
     incidentRayDiv.style.opacity = '0';
     reflectedRayDiv.style.opacity = '1';
 
     // normal ray    
-    await sleep(500);
+    await sleep(1500);
     reflectedRayDiv.style.opacity = '0';
     normalDiv.style.opacity = '1';
-    await sleep(500);
+    await sleep(1500);
+
+    // normal ray    
+    await sleep(1500);
     normalDiv.style.opacity = '0';
+    angleiDiv.style.opacity = '1';
+    await sleep(1500);
+
+    // normal ray    
+    await sleep(1500);
+    angleiDiv.style.opacity = '0';
+    anglerDiv.style.opacity = '1';
+    await sleep(1500);
+    anglerDiv.style.opacity = '0';
+
 
     //all labels shown
     //popup
@@ -609,10 +700,15 @@ async function guidedAnimation() {     // Async function
 }
 
 
-// document.getElementById("NextBtn").onclick = function () {
-//     //first question stage
-//     if ()
-// }
+document.getElementById("NextBtn").onclick = function () {
+    //first question stage
+    if (tutorialStage == 1) {
+        tutorialStage = 2;
+
+        //Here question is asked.
+        //
+    }
+}
 
 //async funtion to fade in and fade away the
 
