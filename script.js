@@ -41,6 +41,16 @@ let roughness0 = 0, transmission1 = 0.9, thick1 = 0;
 //     }
 // }
 
+//TUTORIAL State Variables
+let isSliderClicked = 0, tutorialStage = -1, sliderLeftScanned = 0, sliderRightScanned = 0;
+
+//Variable descripotion
+/**
+ * tutorialStage--
+ * = 0 then its label showing stage
+ * = 1, then intial popup to drag slider is visible.
+ */
+
 let root1Material;
 // loading
 const loader = new GLTFLoader();
@@ -113,7 +123,7 @@ scene.add(cylinderRefractedBeam);
 //-------------Green Cutting Board----------------
 loader.load("./assets/3D models glb/greenBoardFinal.glb", function (glb) {
     greenCuttingBoard = glb.scene;
-    greenCuttingBoard.position.set(4 + sceneShiftX, -2, 0);
+    greenCuttingBoard.position.set(3 + sceneShiftX, -2, 0);
     greenCuttingBoard.scale.set(6.5, 6.5, 6.5);
     greenCuttingBoard.rotation.set(0, 0, 0);
     // greenCuttingBoard.children[0].material = new THREE.MeshPhongMaterial({ color: 'red' });
@@ -221,6 +231,7 @@ scene.add(arc2);
 
 //-------LASER position wrt slider --------------
 function laserPointer() {
+
     // arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
 
     //takes the slider value and rotates/repositions the pointer
@@ -297,9 +308,11 @@ mirrorDiv.style.marginTop = '-1em';
 mirrorDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
 mirrorDiv.style.backdropFilter = "blur(5px)";
 mirrorDiv.style.borderRadius = "0.3em";
+mirrorDiv.style.fontSize = "1.5em";
 mirrorDiv.style.padding = '.3em .5em';
 const mirrorLabel = new CSS2DObject(mirrorDiv);
 // --------------------CONTROL THE LABEL HERE!! -----------------
+mirrorDiv.style.opacity = '0';
 mirrorLabel.position.set(0.25, -0.25, 0);
 plane.add(mirrorLabel);
 mirrorLabel.layers.set(0); //change this to show or hide the labels
@@ -313,11 +326,12 @@ incidentRayDiv.style.marginTop = '-1em';
 incidentRayDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
 incidentRayDiv.style.backdropFilter = "blur(5px)";
 incidentRayDiv.style.borderRadius = "0.3em";
+incidentRayDiv.style.fontSize = "1.5em";
 incidentRayDiv.style.padding = '.3em .5em';
 const incidentRayLabel = new CSS2DObject(incidentRayDiv);
 // --------------------CONTROL THE LABEL HERE!! -----------------
 //********************************************************************* */
-// incidentRayDiv.style.opacity = '0';    
+incidentRayDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
 incidentRayLabel.position.set(0, 0.15, 1.5);
 plane.add(incidentRayLabel);
@@ -329,16 +343,17 @@ incidentRayLabel.layers.set(0); //change this to show or hide the labels
 
 const reflectedRayDiv = document.createElement('div');
 reflectedRayDiv.className = 'label';
-reflectedRayDiv.textContent = 'reflected Ray';
+reflectedRayDiv.textContent = 'Reflected Ray';
 reflectedRayDiv.style.marginTop = '-1em';
 reflectedRayDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
 reflectedRayDiv.style.backdropFilter = "blur(5px)";
 reflectedRayDiv.style.borderRadius = "0.3em";
 reflectedRayDiv.style.padding = '.3em .5em';
+reflectedRayDiv.style.fontSize = "1.5em";
 const reflectedRayLabel = new CSS2DObject(reflectedRayDiv);
 // --------------------CONTROL THE LABEL HERE!! -----------------
 //********************************************************************* */
-// reflectedRayDiv.style.opacity = '0';    
+reflectedRayDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
 reflectedRayLabel.position.set(0, -0.15, 1.5);
 plane.add(reflectedRayLabel);
@@ -356,10 +371,11 @@ normalDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
 normalDiv.style.backdropFilter = "blur(5px)";
 normalDiv.style.borderRadius = "0.3em";
 normalDiv.style.padding = '.3em .5em';
+normalDiv.style.fontSize = "1.5em";
 const normalLabel = new CSS2DObject(normalDiv);
 // --------------------CONTROL THE LABEL HERE!! -----------------
 //********************************************************************* */
-// normalDiv.style.opacity = '0';    
+normalDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
 normalLabel.position.set(-0.1, 0, 3);
 plane.add(normalLabel);
@@ -378,10 +394,11 @@ laserPointerDiv.style.backgroundColor = '#aaaaaaaa'; //faint border
 laserPointerDiv.style.backdropFilter = "blur(5px)";
 laserPointerDiv.style.borderRadius = "0.3em";
 laserPointerDiv.style.padding = '.3em .5em';
+laserPointerDiv.style.fontSize = "1.5em";
 const laserPointerLabel = new CSS2DObject(laserPointerDiv);
 // --------------------CONTROL THE LABEL HERE!! -----------------
 //********************************************************************* */
-// laserPointerDiv.style.opacity = '0';    
+laserPointerDiv.style.opacity = '0';
 //*******************  //change this to show or hide the labels!!!!!!!!!!!!
 laserPointerLabel.position.set(-0.1, 0.5, 5);
 plane.add(laserPointerLabel);
@@ -450,6 +467,9 @@ function animate() {
     if (timeVar == 30) { //ERROR MAY OCCUR HERE TOO
         laserPointer();
     }
+
+    // console.log(camera.position);
+    // console.log(camera.getWorldPosition());
     // cube.rotation.x = documentgetElementByI("myRange").value;
     // line.rotation.x = documentgetElementByI("myRange").value;
     // cube.positio n.x = documentgetElementByI("myRange2").value;
@@ -461,6 +481,16 @@ function animate() {
 animate(); // this gets called before the model gets loaded.
 
 document.getElementById("myRange").oninput = function () {
+    if (tutorialStage == 1) {
+        isSliderClicked = 1;
+        document.getElementById("tutorial1").style.display = "none";
+    }
+    if (isSliderClicked == 1 && document.getElementById("myRange").value <= 0.4) {
+        sliderLeftScanned = 1;
+    }
+    if (isSliderClicked == 1 && document.getElementById("myRange").value >= 1.0) {
+        sliderRightScanned = 1;
+    }
     laserPointer();
 }
 
@@ -500,7 +530,7 @@ document.getElementById("normalToggle").oninput = function () {
 function createArcs() {
     let theta = document.getElementById("myRange").value;
     //Create Angle Arcs
-    arcgeometry = new THREE.TorusGeometry(arrow1Radius - 0.54, 0.03, 16, 64, theta); // radius, thickness
+    arcgeometry = new THREE.TorusGeometry(arrow1Radius - 0.9, 0.03, 16, 64, theta); // radius, thickness
     arcmaterial = new THREE.MeshBasicMaterial({ color: "white", opacity: angleArcOpacity, transparent: true });
     arc = new THREE.Mesh(arcgeometry, arcmaterial);
     //shift to new origin
@@ -510,7 +540,7 @@ function createArcs() {
     scene.add(arc);
 
     //Create Angle Arcs
-    arcgeometry2 = new THREE.TorusGeometry(arrow2Radius - 0.13, 0.03, 16, 64, theta); // radius, thickness
+    arcgeometry2 = new THREE.TorusGeometry(arrow2Radius - 0.9, 0.03, 16, 64, theta); // radius, thickness
     arcmaterial2 = new THREE.MeshBasicMaterial({ color: "white", opacity: angleArcOpacity, transparent: true });
     arc2 = new THREE.Mesh(arcgeometry2, arcmaterial2);
     //shift to new origin
@@ -524,15 +554,67 @@ function destroyArcs() {
     scene.remove(arc);
     scene.remove(arc2);
 }
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+guidedAnimation();
 async function guidedAnimation() {     // Async function
+    //hiding Checkboxes
+    document.getElementById("labelplaneid").style.display = "none";
+    document.getElementById("labelnormalid").style.display = "none";
+    document.getElementById("planeToggle").style.display = "none";
+    document.getElementById("normalToggle").style.display = "none";
+
+    tutorialStage = 0;
     // show mirror label
+    await sleep(500);
+    mirrorDiv.style.opacity = '1';
 
     // Laser pointer label
+    await sleep(500);
+    mirrorDiv.style.opacity = '0';
+    laserPointerDiv.style.opacity = '1';
+    // camera.position.set(4.3, 10.3, 4.7);
+
+
     // incident ray
+    await sleep(500);
+    laserPointerDiv.style.opacity = '0';
+    incidentRayDiv.style.opacity = '1';
+
     // reflected ray    
+    await sleep(500);
+    incidentRayDiv.style.opacity = '0';
+    reflectedRayDiv.style.opacity = '1';
+
+    // normal ray    
+    await sleep(500);
+    reflectedRayDiv.style.opacity = '0';
+    normalDiv.style.opacity = '1';
+    await sleep(500);
+    normalDiv.style.opacity = '0';
+
+    //all labels shown
+    //popup
+    tutorialStage = 1;
+    document.getElementById("tutorial1").style.display = "block";
+    //hide if user clicks on slider(done in range function)
+
+    while (2 - sliderLeftScanned - sliderRightScanned) {
+        await sleep(100);
+    }
+    //show next button
+    document.getElementById("NextBtn").style.display = "block";
+
 }
 
+
+// document.getElementById("NextBtn").onclick = function () {
+//     //first question stage
+//     if ()
+// }
+
+//async funtion to fade in and fade away the
 
 // See what happens to the reflected ray when we move the angle of the pointer.
 // Here the angle of the incidence, i, is equal to the angle of relection, r.

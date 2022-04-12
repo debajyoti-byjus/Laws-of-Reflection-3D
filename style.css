@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 .slidecontainer {
@@ -104,4 +105,39 @@
     top: 5%;
     color: #c8c8c8;
     font-size: 2.5rem;
+}
+
+#tutorial1 {
+    position: absolute;
+    top: 50%;
+    width: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 7vh;
+    background: linear-gradient(to left, greenyellow, rgb(174, 232, 255));
+    color: rgb(85, 115, 85);
+    padding: 5vh 6vh;
+    z-index: 10;
+    text-align: center;
+    border-radius: 2vh;
+    box-shadow: inset 7px 6px 32px rgba(255, 255, 255, 0.31), inset -5px -5px 4px rgba(9, 9, 9, 0.13);
+    font-weight: 700;
+    display: none;
+}
+
+#NextBtn {
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    /* transform: translate(-50%, -50%); */
+    font-size: 11vh;
+    background-color: rgb(66, 186, 197);
+    color: #215148e0;
+    padding: 1vh 5vh;
+    z-index: 10;
+    text-align: center;
+    border-radius: 2vh;
+    box-shadow: inset 7px 6px 32px rgba(255, 255, 255, 0.31), inset -5px -5px 4px rgba(9, 9, 9, 0.13);
+    font-weight: 900;
+    display: none;
 }
