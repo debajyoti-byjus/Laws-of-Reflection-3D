@@ -286,7 +286,6 @@ function laserPointer() {
 
     //positioning the testobject(for positioning the i and r labels)
     testObject23.position.set(arrow1Radius / 2 * Math.cos(theta / 1.2) + sceneShiftX, -0.4, arrow1Radius / 2 * Math.sin(theta / 1.2));
-
     testObject24.position.set(arrow1Radius / 1.5 * Math.cos(theta / 1.2) + sceneShiftX, -0.4, -arrow1Radius / 1.5 * Math.sin(theta / 1.2));
 
 
@@ -653,43 +652,43 @@ async function guidedAnimation() {     // Async function
 
     tutorialStage = 0;
     // show mirror label
-    await sleep(1500);
+    await sleep(10);
     mirrorDiv.style.opacity = '1';
 
     // Laser pointer label
-    await sleep(1500);
-    // mirrorDiv.style.opacity = '0';
+    await sleep(10);
+    mirrorDiv.style.opacity = '0';
     laserPointerDiv.style.opacity = '1';
     // camera.position.set(4.3, 10.3, 4.7);
 
     // incident ray
-    await sleep(1500);
-    // laserPointerDiv.style.opacity = '0';
+    await sleep(10);
+    laserPointerDiv.style.opacity = '0';
     incidentRayDiv.style.opacity = '1';
 
     // reflected ray    
-    await sleep(1500);
-    // incidentRayDiv.style.opacity = '0';
+    await sleep(10);
+    incidentRayDiv.style.opacity = '0';
     reflectedRayDiv.style.opacity = '1';
 
     // normal ray    
-    await sleep(1500);
-    // reflectedRayDiv.style.opacity = '0';
+    await sleep(10);
+    reflectedRayDiv.style.opacity = '0';
     normalDiv.style.opacity = '1';
-    await sleep(1500);
+    await sleep(10);
 
     // normal ray    
-    await sleep(1500);
-    // normalDiv.style.opacity = '0';
+    await sleep(10);
+    normalDiv.style.opacity = '0';
     angleiDiv.style.opacity = '1';
-    await sleep(1500);
+    await sleep(10);
 
     // normal ray    
-    await sleep(1500);
-    // angleiDiv.style.opacity = '0';
+    await sleep(10);
+    angleiDiv.style.opacity = '0';
     anglerDiv.style.opacity = '1';
-    await sleep(1500);
-    // anglerDiv.style.opacity = '0';
+    await sleep(10);
+    anglerDiv.style.opacity = '0';
 
     //all labels shown
     //popup
@@ -715,6 +714,11 @@ document.getElementById("NextBtn").onclick = function () {
         //Here question is shown.
         document.getElementById("question1Containerid").style.display = "block";
     }
+    else if (tutorialStage == 3) {
+        document.getElementById("question1Containerid").style.display = "none";
+        document.getElementById("law1").style.display = "block";
+
+    }
 }
 
 
@@ -724,7 +728,22 @@ document.getElementById("options1Text").onclick = function () {
         //tell answer is incorrect, and show correct law
         console.log("incorrect");
         document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer";
-        document.getElementById("AnswerDivid").style.color = "red";
+        document.getElementById("AnswerDivid").style.color = "#ff003c";
+        //deactivating options
+        document.getElementById("options1Text").style.pointerEvents = "none";
+        document.getElementById("options2Text").style.pointerEvents = "none";
+        document.getElementById("options3Text").style.pointerEvents = "none";
+
+        //highlighting the selected option
+        //highlighting the selected option
+        document.getElementById("options1Text").style.background = "linear-gradient(to left, rgb(255, 45, 164), #ff003c)";
+        document.getElementById("options1Text").style.color = "white";
+        //show next button
+        tutorialStage = 3;
+        document.getElementById("NextBtn").style.top = "45%";
+        document.getElementById("NextBtn").style.right = "5%";
+        document.getElementById("NextBtn").style.left = "auto";
+        document.getElementById("NextBtn").style.display = "block";
     }
 
 }
@@ -734,9 +753,21 @@ document.getElementById("options2Text").onclick = function () {
     if (tutorialStage == 2) {
         //tell answer is Correct, and show correct law
         console.log("Correct!!");
-        document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer!";
+        document.getElementById("AnswerDivid").innerText = "Correct answer!";
         document.getElementById("AnswerDivid").style.color = "#035c2b";
+        //deactivating options
+        document.getElementById("options1Text").style.pointerEvents = "none";
+        document.getElementById("options2Text").style.pointerEvents = "none";
+        document.getElementById("options3Text").style.pointerEvents = "none";
 
+        //highlighting the selected option
+        document.getElementById("options2Text").style.background = "linear-gradient(to left, #62ff2e, #aaff64)";
+        //show next button
+        tutorialStage = 3;
+        document.getElementById("NextBtn").style.top = "45%";
+        document.getElementById("NextBtn").style.right = "5%";
+        document.getElementById("NextBtn").style.left = "auto";
+        document.getElementById("NextBtn").style.display = "block";
     }
 }
 
@@ -746,9 +777,31 @@ document.getElementById("options3Text").onclick = function () {
         //tell answer is incorrect, and show correct law
         console.log("incorrect");
         document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer";
-        document.getElementById("AnswerDivid").style.color = "red";
+        document.getElementById("AnswerDivid").style.color = "#ff003c";
+        //deactivating options
+        document.getElementById("options1Text").style.pointerEvents = "none";
+        document.getElementById("options2Text").style.pointerEvents = "none";
+        document.getElementById("options3Text").style.pointerEvents = "none";
 
+        //highlighting the selected option
+        document.getElementById("options3Text").style.background = "linear-gradient(to left, rgb(255, 45, 164), #ff003c)";
+        document.getElementById("options3Text").style.color = "white";
+
+        //show next button
+        tutorialStage = 3;
+        document.getElementById("NextBtn").style.top = "45%";
+        document.getElementById("NextBtn").style.right = "5%";
+        document.getElementById("NextBtn").style.left = "auto";
+        document.getElementById("NextBtn").style.display = "block";
     }
+}
+document.getElementById("law1").onclick = function () {
+    document.getElementById("law1").style.display = "none";
+    //show the div to move the plan by draggin the screen
+    //show the plane toggle
+    //show next button immediately
+
+
 }
 
 //async funtion to fade in and fade away the
