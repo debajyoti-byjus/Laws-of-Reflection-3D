@@ -5,10 +5,12 @@ import { OrbitControls } from './js/OrbitControls.js';
 import { Reflector } from './js/Reflector.js';
 import { CSS2DRenderer, CSS2DObject } from './js/CSS2DRenderer.js';
 
+
+
+
 //camera controls
 // import { CameraControls } from './js/CameraControls.js';
 // CameraControls.install({ THREE: THREE });
-
 
 
 // import { EffectComposer } from './js/EffectComposer.js';
@@ -40,7 +42,7 @@ let isSliderClicked = 0, tutorialStage = -1, sliderLeftScanned = 0, sliderRightS
  * tutorialStage--
  * = 0 then its label showing stage
  * = 1, then intial popup to drag slider is visible.
- * = 2, then next button is visible
+ * = 2, then next button is clicked, and question is visible
  */
 
 let root1Material;
@@ -303,7 +305,7 @@ const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
 }
-const camera = new THREE.PerspectiveCamera(90, sizes.width / sizes.height, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(50, sizes.width / sizes.height, 0.1, 100);
 camera.position.set(0, 12, 0);
 // camera.rotation.set(1, Math.PI, 0.5);
 
@@ -456,9 +458,6 @@ angleiLabel.layers.set(0); //change this to show or hide the labels
 
 
 
-
-
-
 const anglerDiv = document.createElement('div');
 anglerDiv.className = 'label';
 anglerDiv.textContent = 'r';
@@ -523,8 +522,8 @@ renderer.setClearColor("#333333"); // whi/te background - replace ffffff with an
 
 //Orbit controlls
 const controls = new OrbitControls(camera, labelRenderer.domElement);
-controls.minAzimuthAngle = 1.6;
-controls.maxAzimuthAngle = 1.7;
+// controls.minAzimuthAngle = 1.6;
+// controls.maxAzimuthAngle = 1.7;
 
 // const cameraControls = new CameraControls(camera, renderer.domElement);
 // CameraControls.rotateTo(0, 0, enableTransition);
@@ -663,7 +662,6 @@ async function guidedAnimation() {     // Async function
     laserPointerDiv.style.opacity = '1';
     // camera.position.set(4.3, 10.3, 4.7);
 
-
     // incident ray
     await sleep(1500);
     // laserPointerDiv.style.opacity = '0';
@@ -693,7 +691,6 @@ async function guidedAnimation() {     // Async function
     await sleep(1500);
     // anglerDiv.style.opacity = '0';
 
-
     //all labels shown
     //popup
     tutorialStage = 1;
@@ -711,11 +708,46 @@ async function guidedAnimation() {     // Async function
 
 document.getElementById("NextBtn").onclick = function () {
     //first question stage
+    document.getElementById("NextBtn").style.display = "none";
     if (tutorialStage == 1) {
         tutorialStage = 2;
 
-        //Here question is asked.
-        //
+        //Here question is shown.
+        document.getElementById("question1Containerid").style.display = "block";
+    }
+}
+
+
+document.getElementById("options1Text").onclick = function () {
+    //first question stage
+    if (tutorialStage == 2) {
+        //tell answer is incorrect, and show correct law
+        console.log("incorrect");
+        document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer";
+        document.getElementById("AnswerDivid").style.color = "red";
+    }
+
+}
+
+document.getElementById("options2Text").onclick = function () {
+    //first question stage
+    if (tutorialStage == 2) {
+        //tell answer is Correct, and show correct law
+        console.log("Correct!!");
+        document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer!";
+        document.getElementById("AnswerDivid").style.color = "#035c2b";
+
+    }
+}
+
+document.getElementById("options3Text").onclick = function () {
+    //first question stage
+    if (tutorialStage == 2) {
+        //tell answer is incorrect, and show correct law
+        console.log("incorrect");
+        document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer";
+        document.getElementById("AnswerDivid").style.color = "red";
+
     }
 }
 
