@@ -29,8 +29,8 @@ const scene = new THREE.Scene();
 
 let raylength = 4, m = 1, n = 1, radiusRatio = 0.6;
 // let arrow1Radius = 1, arrow2Radius = 1.1, beamCentreRadius = 1, laserPointerRadius = 4;
-let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25, normalOpacity = 1, planeOpacity = 0.1, angleArcOpacity = 1;
-let sceneShiftX = -3;
+let arrow1Radius = 2, arrow2Radius = 2.2, beamCentreRadius = 2, laserPointerRadius = 5.25, normalOpacity = 1, planeOpacity = 0.5, angleArcOpacity = 1;
+let sceneShiftX = -2;
 let root1, root2, root3, laserModel, greenCuttingBoard, arrowModel2, arrowModel, normalDottedModel, scaleval = 0.8;
 let roughness0 = 0, transmission1 = 0.9, thick1 = 0;
 
@@ -321,9 +321,9 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 camera.layers.enableAll();
 // camera.layers.toggle(1);
 
-const axesHelper = new THREE.AxesHelper(7);
-axesHelper.layers.enableAll();
-scene.add(axesHelper);
+// const axesHelper = new THREE.AxesHelper(7);
+// axesHelper.layers.enableAll();
+// scene.add(axesHelper);
 
 const mirrorDiv = document.createElement('div');
 mirrorDiv.className = 'label';
@@ -521,9 +521,11 @@ renderer.setClearColor("#333333"); // whi/te background - replace ffffff with an
 
 //Orbit controlls
 const controls = new OrbitControls(camera, labelRenderer.domElement);
-// controls.minAzimuthAngle = 1.6;
-// controls.maxAzimuthAngle = 1.7;
-
+// controls.minAzimuthAngle = -2;
+// controls.maxAzimuthAngle = 2;
+controls.maxPolarAngle = 1.6;
+controls.maxDistance = 10;
+controls.minDistance = 6;
 // const cameraControls = new CameraControls(camera, renderer.domElement);
 // CameraControls.rotateTo(0, 0, enableTransition);
 renderer.render(scene, camera);
@@ -649,6 +651,8 @@ async function guidedAnimation() {     // Async function
     document.getElementById("labelnormalid").style.display = "none";
     document.getElementById("planeToggle").style.display = "none";
     document.getElementById("normalToggle").style.display = "none";
+    document.getElementById("planeToggle").checked = false;
+    reflectionPlane.material.opacity = 0;
 
     tutorialStage = 0;
     // show mirror label
@@ -708,6 +712,7 @@ async function guidedAnimation() {     // Async function
 document.getElementById("NextBtn").onclick = function () {
     //first question stage
     document.getElementById("NextBtn").style.display = "none";
+    console.log(tutorialStage);
     if (tutorialStage == 1) {
         tutorialStage = 2;
 
@@ -717,6 +722,31 @@ document.getElementById("NextBtn").onclick = function () {
     else if (tutorialStage == 3) {
         document.getElementById("question1Containerid").style.display = "none";
         document.getElementById("law1").style.display = "block";
+    }
+    else if (tutorialStage == 4) {
+
+        //hide pointer
+        document.getElementById("pointerPng").style.display = "none";
+
+
+        //hide checkbox
+        document.getElementById("planeToggle").style.display = "none";
+        document.getElementById("labelplaneid").style.display = "none";
+
+        //edit contents of the 
+        document.getElementById("question2Containerid").style.display = "block";
+
+        //show law 2
+        // document.getElementById("law2").style.display = "block";
+    }
+    if (tutorialStage == 5) {
+        //Here question is shown.
+        document.getElementById("question2Containerid").style.display = "none";
+        //show normal checkbox
+        document.getElementById("normalToggle").style.display = "block";
+        document.getElementById("labelnormalid").style.display = "block";
+        document.getElementById("planeToggle").style.display = "block";
+        document.getElementById("labelplaneid").style.display = "block";
 
     }
 }
@@ -726,7 +756,6 @@ document.getElementById("options1Text").onclick = function () {
     //first question stage
     if (tutorialStage == 2) {
         //tell answer is incorrect, and show correct law
-        console.log("incorrect");
         document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer";
         document.getElementById("AnswerDivid").style.color = "#ff003c";
         //deactivating options
@@ -752,8 +781,7 @@ document.getElementById("options2Text").onclick = function () {
     //first question stage
     if (tutorialStage == 2) {
         //tell answer is Correct, and show correct law
-        console.log("Correct!!");
-        document.getElementById("AnswerDivid").innerText = "Correct answer!";
+        document.getElementById("AnswerDivid").innerText = "🎉Correct answer!🥳";
         document.getElementById("AnswerDivid").style.color = "#035c2b";
         //deactivating options
         document.getElementById("options1Text").style.pointerEvents = "none";
@@ -775,7 +803,6 @@ document.getElementById("options3Text").onclick = function () {
     //first question stage
     if (tutorialStage == 2) {
         //tell answer is incorrect, and show correct law
-        console.log("incorrect");
         document.getElementById("AnswerDivid").innerText = "∠ i = ∠ r is the correct answer";
         document.getElementById("AnswerDivid").style.color = "#ff003c";
         //deactivating options
@@ -798,11 +825,85 @@ document.getElementById("options3Text").onclick = function () {
 document.getElementById("law1").onclick = function () {
     document.getElementById("law1").style.display = "none";
     //show the div to move the plan by draggin the screen
-    //show the plane toggle
-    //show next button immediately
+    document.getElementById("tutorial2").style.display = "block";
 
 
 }
+
+document.getElementById("idtut2close").onclick = async function () {
+    //Hide the div to move the plan by draggin the screen
+    document.getElementById("tutorial2").style.display = "none";
+
+
+    document.getElementById("pointerPng").style.display = "block";
+
+
+    //show the plane toggle
+    await sleep(3000);
+    document.getElementById("planeToggle").style.display = "block";
+    document.getElementById("labelplaneid").style.display = "block";
+    await sleep(1000);
+    document.getElementById("planeToggle").checked = true;
+    reflectionPlane.material.opacity = planeOpacity;
+    //show next button immediately
+
+    await sleep(6000);
+    tutorialStage = 4;
+    document.getElementById("NextBtn").style.top = "auto";
+    document.getElementById("NextBtn").style.bottom = "5%";
+    document.getElementById("NextBtn").style.right = "5%";
+    document.getElementById("NextBtn").style.left = "auto";
+    document.getElementById("NextBtn").style.display = "block";
+
+}
+
+
+document.getElementById("options21Text").onclick = function () {
+
+    //tell answer is incorrect, and show correct law
+    document.getElementById("AnswerDivid2").innerText = "🎉Correct answer!🥳";
+    document.getElementById("AnswerDivid2").style.color = "#035c2b";
+    //deactivating options
+    document.getElementById("options21Text").style.pointerEvents = "none";
+    document.getElementById("options22Text").style.pointerEvents = "none";
+    //highlighting the selected option
+    //highlighting the selected option
+
+    document.getElementById("options22Text").style.background = "linear-gradient(to left, #62ff2e, #aaff64)";
+
+    //show next button
+    tutorialStage = 5;
+    document.getElementById("NextBtn").style.bottom = "auto";
+    document.getElementById("NextBtn").style.top = "45%";
+    document.getElementById("NextBtn").style.right = "5%";
+    document.getElementById("NextBtn").style.left = "auto";
+    document.getElementById("NextBtn").style.display = "block";
+}
+
+document.getElementById("options22Text").onclick = function () {
+    //first question stage
+    if (tutorialStage == 4) {
+        //tell answer is Correct, and show correct law
+        document.getElementById("AnswerDivid2").innerText = " Oops, Yes is the Correct answer";
+        document.getElementById("AnswerDivid2").style.color = "#ff003c";
+        //deactivating options
+        document.getElementById("options21Text").style.pointerEvents = "none";
+        document.getElementById("options22Text").style.pointerEvents = "none";
+
+        //highlighting the selected option
+        document.getElementById("options21Text").style.background = "linear-gradient(to left, rgb(255, 45, 164), #ff003c)";
+        document.getElementById("options21Text").style.color = "white";
+
+        //show next button
+        tutorialStage = 5;
+        document.getElementById("NextBtn").style.bottom = "auto";
+        document.getElementById("NextBtn").style.top = "45%";
+        document.getElementById("NextBtn").style.right = "5%";
+        document.getElementById("NextBtn").style.left = "auto";
+        document.getElementById("NextBtn").style.display = "block";
+    }
+}
+
 
 //async funtion to fade in and fade away the
 
