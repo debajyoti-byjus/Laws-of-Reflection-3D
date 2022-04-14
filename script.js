@@ -656,42 +656,42 @@ async function guidedAnimation() {     // Async function
 
     tutorialStage = 0;
     // show mirror label
-    await sleep(10);
+    await sleep(1500);
     mirrorDiv.style.opacity = '1';
 
     // Laser pointer label
-    await sleep(10);
+    await sleep(1500);
     mirrorDiv.style.opacity = '0';
     laserPointerDiv.style.opacity = '1';
     // camera.position.set(4.3, 10.3, 4.7);
 
     // incident ray
-    await sleep(10);
+    await sleep(1500);
     laserPointerDiv.style.opacity = '0';
     incidentRayDiv.style.opacity = '1';
 
     // reflected ray    
-    await sleep(10);
+    await sleep(1500);
     incidentRayDiv.style.opacity = '0';
     reflectedRayDiv.style.opacity = '1';
 
     // normal ray    
-    await sleep(10);
+    await sleep(1500);
     reflectedRayDiv.style.opacity = '0';
     normalDiv.style.opacity = '1';
-    await sleep(10);
+    await sleep(1500);
 
     // normal ray    
-    await sleep(10);
+    await sleep(1500);
     normalDiv.style.opacity = '0';
     angleiDiv.style.opacity = '1';
-    await sleep(10);
+    await sleep(1500);
 
     // normal ray    
-    await sleep(10);
+    await sleep(1500);
     angleiDiv.style.opacity = '0';
     anglerDiv.style.opacity = '1';
-    await sleep(10);
+    await sleep(1500);
     anglerDiv.style.opacity = '0';
 
     //all labels shown
@@ -747,6 +747,12 @@ document.getElementById("NextBtn").onclick = function () {
         document.getElementById("labelnormalid").style.display = "block";
         document.getElementById("planeToggle").style.display = "block";
         document.getElementById("labelplaneid").style.display = "block";
+
+        //show finish button
+        document.getElementById("finish").style.top = "auto";
+        document.getElementById("finish").style.bottom = "10%";
+        document.getElementById("finish").style.display = "block";
+
 
     }
 }
