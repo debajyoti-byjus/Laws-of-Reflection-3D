@@ -152,24 +152,24 @@ drawNormal();
 //-------------Mirror----------------
 const geometry = new THREE.PlaneGeometry(1, 1);
 
-// let plane = new Reflector(geometry, {
-//     clipBias: 0,
-//     textureWidth: window.innerWidth * window.devicePixelRatio,
-//     textureHeight: window.innerHeight * window.devicePixelRatio,
-//     color: 0x777777
-// });
-
-const material = new THREE.MeshPhysicalMaterial({
-    reflectivity: 1.0,
-    transmission: 1,
-    roughness: 0,
-    metalness: 0,
-    clearcoat: 0.0,
-    clearcoatRoughness: 0,
-    color: new THREE.Color("#222222"),
-    ior: 1.5,
+let plane = new Reflector(geometry, {
+    clipBias: 0,
+    textureWidth: window.innerWidth * window.devicePixelRatio,
+    textureHeight: window.innerHeight * window.devicePixelRatio,
+    color: 0x777777
 });
-const plane = new THREE.Mesh(geometry, material);
+
+// const material = new THREE.MeshPhysicalMaterial({
+//     reflectivity: 1.0,
+//     transmission: 1,
+//     roughness: 0,
+//     metalness: 0,
+//     clearcoat: 0.0,
+//     clearcoatRoughness: 0,
+//     color: new THREE.Color("#222222"),
+//     ior: 1.5,
+// });
+// const plane = new THREE.Mesh(geometry, material);
 plane.scale.set(3, 7, 1);
 plane.rotation.set(Math.PI / 2, Math.PI / 2, 0);
 plane.position.set(0 + sceneShiftX, 0.1, 0);
